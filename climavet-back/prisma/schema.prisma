@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Clinic {
+  id            String
+  name          String
+  address       String
+  city          String
+  province      String
+  postalCode    String
+  clinicType    String   // "small_animal", "equine", "mixed"
+  latitude      Float?
+  longitude     Float?
+  
+  riskAssessments RiskAssessment[]
+  disasterPlans   DisasterPlan[]
+  resourceChecklists ResourceChecklist[]
+  
+  @@map("clinics")
+}
+
+model RiskAssessment {
+  id         String   @id @default(cuid())
+  clinicId   String
+  clinic     Clinic   @relation(fields: [clinicId], references: [id])
+  hazards    Json     // Store flood, wildfire, etc. risks
+  score      Float
+  createdAt  DateTime @default(now())
+  
+  @@map("risk_assessments")
+}
+
+model DisasterPlan {
+  id          String
+  name        String
+}
