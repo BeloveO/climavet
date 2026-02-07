@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Clinic {
+  id            String  @id @default(cuid())
+  name          String
+  address       String
+  city          String
+  province      String
+  postalCode    String
+  clinicType    ClinicType
+  speciesType   SpeciesType
+  serviceType   ServiceType
+  latitude      Float?
+  longitude     Float?
+  phone         String?
+  email         String?
+  
+  riskAssessments RiskAssessment[]
+  disasterPlans   DisasterPlan[]
+  resourceChecklists ResourceChecklist[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@map("clinics")
+}
+
+model RiskAssessment {
+  id         String   @id @default(cuid())
+  clinicId   String
+  clinic     Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  // Risk categories
+  floodRisk      Float  @default(0)
+  wildfireRisk   Float  @default(0)
+  heatwaveRisk   Float  @default(0)
+  powerOutageRisk Float @default(0)
+  airpollutionRisk  Float @default(0)
+  erosionRisk     Float @default(0)
+
+  // Assessment details
+  hazards    Json     // Store flood, wildfire, etc. risks
+  vulnerabilities Json?
+  recommendations Json?
+  score      Float
+  
+  createdAt  DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@map("risk_assessments")
+}
+
+model DisasterPlan {
+  id         Int     @id @default(autoincrement())
+  clinicId   String
+  clinic     Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  planType    String   // "flood", "wildfire", "heatwave", "general"
+  content     Json
+  version     String   @default("1.0")
+  isActive    Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("disaster_plans")
+}
+
+model ResourceChecklist {
+  id         Int     @id @default(autoincrement())
+  clinicId   String
+  clinic     Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  category   String
+  items      Json
+  status     ChecklistStatus @default(INCOMPLETE)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("resource_checklists")
+}
+
+enum ClinicType {
+  PRIVATE
+  CORPORATE
+  MOBILE
+  ANIMAL_SHELTER
+  TEACHING_HOSPITAL
+  WILDLIFE_FACILITY
+}
+
+enum SpeciesType {
+  SMALL_ANIMAL
+  EQUINE
+  FELINE
+  MIXED
+  EXOTIC_AND_AVIAN
+}
+
+enum ServiceType {
+  GENERAL 
+  EMERGENCY_OR_CRITICAL
+  URGENT
+  SPECIALTY
+}
+
+enum ChecklistStatus {
+  INCOMPLETE
+  IN_PROGRESS
+  COMPLETE
+}
