@@ -56,6 +56,12 @@ class RiskAssessment(models.Model):
     power_outage_risk = models.IntegerField(default=0)
     air_pollution_risk = models.IntegerField(default=0)
     erosion_risk = models.IntegerField(default=0)
+    hurricane_risk = models.IntegerField(default=0)
+    tornado_risk = models.IntegerField(default=0)
+    cold_wave_risk = models.IntegerField(default=0)
+    blizzard_risk = models.IntegerField(default=0)
+    earthquake_risk = models.IntegerField(default=0)
+    avalanche_risk = models.IntegerField(default=0)
     assessment_data = models.JSONField(default=dict)  # Store detailed assessment data as JSON  
     vulnerabilities = models.JSONField(default=list)  # Store vulnerabilities as JSON list
     recommendations = models.JSONField(default=list)  # Store recommendations as JSON list

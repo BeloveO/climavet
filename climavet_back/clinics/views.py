@@ -46,6 +46,12 @@ class RiskAssessmentViewSet(viewsets.ModelViewSet):
             power_outage_risk=scores.get('power_outage_risk', 0),
             air_pollution_risk=scores.get('air_pollution_risk', 0),
             erosion_risk=scores.get('erosion_risk', 0),
+            hurricane_risk=scores.get('hurricane_risk', 0),
+            tornado_risk=scores.get('tornado_risk', 0),
+            cold_wave_risk=scores.get('cold_wave_risk', 0),
+            blizzard_risk=scores.get('blizzard_risk', 0),
+            earthquake_risk=scores.get('earthquake_risk', 0),
+            avalanche_risk=scores.get('avalanche_risk', 0),
             assessment_data=data
         )
         
