@@ -4,8 +4,8 @@ from .views import DisasterPlanViewSet, DisasterTypeViewSet
 
 router = DefaultRouter()
 
-router.register(r'', DisasterPlanViewSet, basename='disasterplan')
-router.register(r'disaster-types', DisasterTypeViewSet, basename='disastertype')
+router.register(r'plans', DisasterPlanViewSet, basename='disasterplan')
+router.register(r'types', DisasterTypeViewSet, basename='disastertype')
 
 urlpatterns = [
     path('', include(router.urls)),
