@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 import { Container, Typography, Button, CircularProgress } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
 
 
 function Dpg() {
-    const { clinicId } = useParams();
     const [disasterTypes, setDisasterTypes] = useState([]);
     const [selectedDisasterType, setSelectedDisasterType] = useState('');
     const [generating, setGeneratingPlan] = useState(null);
@@ -40,16 +38,38 @@ function Dpg() {
         setError(null);
         setGeneratingPlan(true);
         setLoading(true);
-        axios.post('/api/disaster-plans/plans/generate/', {
-            clinic: clinicId,
-            disaster_type: selectedDisasterType,
-            risk_assessment_data: {} // You can replace this with actual data if needed
-        }, {
+        console.log('Selected disaster type ID:', selectedDisasterType);
+
+        // Function to get CSRF token from cookies
+        // function getCookie(name) {
+        //    let cookieValue = null;
+        //    if (document.cookie && document.cookie !== '') {
+        //        const cookies = document.cookie.split(';');
+        //       for (let i = 0; i < cookies.length; i++) {
+        //            const cookie = cookies[i].trim();
+        //            // Does this cookie string begin with the name we want?
+        //            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        //                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    return cookieValue;
+        //}
+        
+        //const csrftoken = getCookie('csrftoken');
+
+
+        axios.get('/api/disaster-plans/plans/generate/', {
+            params: {
+                disaster_type: selectedDisasterType
+            },
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             }
         })
             .then(response => {
+                console.log('Generated plan:', response.data);
                 setPlan(response.data);
                 setGeneratingPlan(false);
                 setLoading(false);
@@ -143,6 +163,21 @@ function Dpg() {
                     <Typography variant="body1" style={{ marginBottom: '20px', fontStyle: 'italic' }}>
                         {plan.description}
                     </Typography>
+                    )}
+                    {/* Common Regions */}
+                    {plan.common_regions && plan.common_regions.length > 0 && (
+                        <div style={{ marginBottom: '20px' }}>
+                            <Typography variant="h6" gutterBottom>
+                                Commonly Affected Regions
+                            </Typography>
+                            <ul style={{ paddingLeft: '20px' }}>
+                                {plan.common_regions.map((region, index) => (
+                                    <li key={index} style={{ marginBottom: '8px' }}>
+                                        {region}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     )}
                      {/* Preparation Steps */}
                     {plan.preparation_steps && plan.preparation_steps.length > 0 && (

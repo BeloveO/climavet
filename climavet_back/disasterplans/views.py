@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import DisasterPlan, DisasterType
 from .services.plan_generator import DisasterPlanGenerator
+from datetime import datetime
 from .serializers import DisasterPlanSerializer, DisasterTypeSerializer
 from clinics.models import Clinic
 from .data.disaster_protocols import DISASTER_PROTOCOLS
@@ -59,22 +60,62 @@ class DisasterPlanViewSet(viewsets.ModelViewSet):
         """
         Get plans from ones saved in disaster protocol data based on the type of disaster provided in request body. This endpoint can be used to generate plans without needing to go through the full risk assessment process, using predefined protocols as a starting point.
         """
-        data = request.data
-        disaster_type = data.get('disaster_type')
-        try:
-            disaster_type = DisasterType.objects.get(category=disaster_type)
-        except DisasterType.DoesNotExist:
-            return Response({'error': 'Disaster Type not found'}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            protocol = DISASTER_PROTOCOLS.get(disaster_type.category)
-            if not protocol:
-                return Response({'error': 'No protocol found for this disaster type'}, status=status.HTTP_404_NOT_FOUND)
-            return Response({'protocol': protocol}, status=status.HTTP_200_OK)
-        except ValueError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+        if request.method == 'GET':
+            disaster_type_id = request.query_params.get('disaster_type')
+        else:  # POST
+            disaster_type_id = request.data.get('disaster_type')
         
-
+        if not disaster_type_id:
+            return Response(
+                {'error': 'disaster_type is required'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Convert to integer if it's a string
+            if isinstance(disaster_type_id, str):
+                disaster_type_id = int(disaster_type_id)
+                
+            disaster_type_obj = DisasterType.objects.get(id=disaster_type_id)
+            
+            # Get protocol using the category
+            protocol = DISASTER_PROTOCOLS.get(disaster_type_obj.category)
+            
+            if not protocol:
+                return Response(
+                    {'error': f'No protocol found for disaster category: {disaster_type_obj.category}'}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Add metadata to the response
+            response_data = protocol.copy()
+            response_data['created_at'] = datetime.now().isoformat()
+            response_data['disaster_type_info'] = {
+                'id': disaster_type_obj.id,
+                'name': disaster_type_obj.name,
+                'category': disaster_type_obj.category,
+                'description': disaster_type_obj.description
+            }
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+            
+        except DisasterType.DoesNotExist:
+            return Response(
+                {'error': f'Disaster Type with id {disaster_type_id} not found'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except ValueError:
+            return Response(
+                {'error': 'Invalid disaster_type ID format'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            print(f"Error generating plan: {str(e)}")
+            return Response(
+                {'error': str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
     @action(detail=False, methods=['get'], url_path='templates')
     def templates(self, request):
         """

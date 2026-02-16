@@ -134,3 +134,17 @@ CORS_ALLOW_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:5173/",
 ]
+
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be sent
+
+# csrf settings
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_HTTPONLY = False  # Set to False so JavaScript can read it
+CSRF_COOKIE_SAMESITE = 'Lax'  # or 'None' if using cross-site requests
+CSRF_COOKIE_SECURE = False  # Set to True only in production with HTTPS
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:5173/",
+]

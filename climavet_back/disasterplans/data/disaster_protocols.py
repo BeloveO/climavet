@@ -1,10 +1,11 @@
-DISASTER_PROTOCOLS = [
-    {
+DISASTER_PROTOCOLS = {
+    "FLOOD": {
         "id": 1,
         "name": "Flood Protocol",
         "description": "Steps to take in the event of a flood, including evacuation procedures, securing the clinic, and protecting animals.",
         "disaster_type": "FLOOD",
         "created_at": "",
+        "common_regions": ['River Flood-General: River valleys, Coastal areas, Low-lying areas', 'River Flood-Canada: Quebec (St. Lawrence River valley), British Columbia (Fraser Valley, Okanagan), Manitoba (Red River Valley), Atlantic Canada (New Brunswick\'s Saint John River)', 'Flash Flood-General: Urban areas, Mountainous regions, Dry riverbeds', 'Flash Flood-Canada: Alberta (Calgary), British Columbia (Vancouver), Ontario (Toronto), Quebec (Montreal)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -12,12 +13,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "WILDFIRE": {
         "id": 2,
         "name": "Wildfire Protocol",
         "description": "Guidelines for preparing for and responding to wildfires, including creating defensible space, evacuation plans, and protecting animals from smoke inhalation.",
         "disaster_type": "WILDFIRE",
         "created_at": "",
+        "common_regions": ['General: Dry forests, Grasslands, Mountain regions', 'Canada: British Columbia, Alberta (foothills/north), Saskatchewan, Manitoba, Ontario, Quebec, and the Northwest Territories'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -25,12 +27,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "HEATWAVE": {
         "id": 3,
         "name": "Heatwave Protocol",
         "description": "Measures to take during heatwaves, such as ensuring adequate hydration for animals, providing cooling areas, and monitoring for signs of heat stress.",
         "disaster_type": "HEATWAVE",
         "created_at": "",
+        "common_regions": ['General: Desert areas, Urban centers, Southern regions', 'Canada: British Columbia (interior and coastal), Prairies (Alberta, Saskatchewan), Southern Ontario, Quebec, and increasingly, the Arctic'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -38,12 +41,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "POWER_OUTAGE": {
         "id": 4,
         "name": "Power Outage Protocol",
         "description": "Steps to maintain clinic operations during power outages, including backup power solutions, securing perishable supplies, and ensuring animal safety.",
         "disaster_type": "POWER_OUTAGE",
         "created_at": "",
+        "common_regions": ['General: All regions, Areas prone to storms, Remote areas', 'Canada: Ontario and Quebec (ice storms/storms), Atlantic Canada (hurricanes/winter storms), and British Columbia (wind/ice)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -51,12 +55,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "AIR_POLLUTION": {
         "id": 5,
         "name": "Air Pollution Protocol",
         "description": "Guidelines for protecting animals from poor air quality, including monitoring air quality levels, providing indoor shelter, and minimizing outdoor activities.",
         "disaster_type": "AIR_POLLUTION",
         "created_at": "",
+        "common_regions": ['General: Industrial areas, Major cities, Valley regions', 'Canada: B.C., Alberta, Saskatchewan, Manitoba, Northwest Territories, and Northern Ontario/Quebec (wildfire smoke), Ontario and Quebec (urban smog)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -64,12 +69,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "EROSION": {
         "id": 6,
         "name": "Erosion Protocol",
         "description": "Measures to prevent and mitigate erosion around the clinic, including proper drainage, soil stabilization techniques, and protecting vulnerable areas.",
         "disaster_type": "EROSION",
         "created_at": "",
+        "common_regions": ['General: Coastal areas, Beachfront properties, Islands', 'Canada: Atlantic Canada (Prince Edward Island, Nova Scotia, Newfoundland and Labrador), and the Arctic coast (e.g., Tuktoyaktuk, N.W.T.)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -77,12 +83,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "HURRICANE": {
         "id": 7,
         "name": "Hurricane Protocol",
         "description": "Steps to take in the event of a hurricane, including securing the clinic, evacuating animals if necessary, and preparing for power outages.",
         "disaster_type": "HURRICANE",
         "created_at": "",
+        "common_regions": ['General: Coastal regions, Islands, Tropical areas', 'Canada: Atlantic Canada (Nova Scotia, New Brunswick, Newfoundland and Labrador), and occasionally Quebec and Ontario (remnants of hurricanes)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -90,12 +97,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "TORNADO": {
         "id": 8,
         "name": "Tornado Protocol",
         "description": "Guidelines for preparing for and responding to tornadoes, including identifying safe areas within the clinic and protecting animals from flying debris.",
         "disaster_type": "TORNADO",
         "created_at": "",
+        "common_regions": ['General: Plains, Midwest, Southern states', 'Canada: Southern Ontario, Quebec, and the Prairies (Alberta, Saskatchewan, Manitoba)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -103,12 +111,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "COLD_WAVE": {
         "id": 9,
         "name": "Cold Wave Protocol",
         "description": "Measures to take during cold waves, such as ensuring adequate heating for animals, providing warm shelter, and monitoring for signs of hypothermia.",
         "disaster_type": "COLD_WAVE",
         "created_at": "",
+        "common_regions": ['General: Northern regions, Mountainous areas, Continental interiors', 'Canada: Northern Ontario, Quebec, the Prairies (Alberta, Saskatchewan, Manitoba), and the Arctic (N.W.T., Nunavut)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -116,12 +125,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "BLIZZARD": {
         "id": 10,
         "name": "Blizzard Protocol",
         "description": "Guidelines for preparing for and responding to blizzards, including securing the clinic, providing warm shelter for animals, and monitoring for signs of hypothermia.",
         "disaster_type": "BLIZZARD",
         "created_at": "",
+        "common_regions": ['General: Northern states, Mountain regions, Great Lakes area', 'Canada: Ontario, Quebec, the Prairies (Alberta, Saskatchewan, Manitoba), and the Arctic (N.W.T., Nunavut)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -129,12 +139,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "EARTHQUAKE": {
         "id": 11,
         "name": "Earthquake Protocol",
         "description": "Steps to take in the event of an earthquake, including securing the clinic, evacuating animals if necessary, and ensuring structural safety.",
         "disaster_type": "EARTHQUAKE",
         "created_at": "",
+        "common_regions": ['General: Fault lines, Pacific Ring of Fire, Tectonic plate boundaries', 'Canada: British Columbia (west coast), Yukon, the Arctic (N.W.T.), the Saint Lawrence and Ottawa River valleys (Quebec/Ontario)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -142,12 +153,13 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     },
-    {
+    "AVALANCHE": {
         "id": 12,
         "name": "Avalanche Protocol",
         "description": "Guidelines for preparing for and responding to avalanches, including securing the clinic, evacuating animals if necessary, and ensuring safety in avalanche-prone areas.",
         "disaster_type": "AVALANCHE",
         "created_at": "",
+        "common_regions": ['General: Mountain ranges, Ski areas, Steep slopes', 'Canada: British Columbia (Rocky Mountains, Coast Mountains), Alberta (Rocky Mountains), and the Arctic (N.W.T., Yukon)'],
         "preparation_steps": [],
         "response_steps": [],
         "recovery_steps": [],
@@ -155,4 +167,4 @@ DISASTER_PROTOCOLS = [
         "supplies_needed": [],
         "training_requirements": [],
     }
-]
+}

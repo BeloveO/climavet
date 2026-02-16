@@ -4,10 +4,7 @@ from ..data.disaster_protocols import DISASTER_PROTOCOLS
 from clinics.models import Clinic
 
 class DisasterPlanGenerator:
-    """Service class responsible for generating disaster plans from existing protocols"""
-
-    def __init__(self):
-        self.protocols = DISASTER_PROTOCOLS
+    """Service class responsible for generating disaster plans based on risk assessments and predefined protocols."""
 
     @staticmethod
     def generate_plan(clinic: Clinic, disaster_type: DisasterType, risk_assessment_data: Dict[str, Any]) -> DisasterPlan:
@@ -31,9 +28,9 @@ class DisasterPlanGenerator:
         # Create and return the DisasterPlan instance
         disaster_plan = DisasterPlan.objects.create(
             clinic=clinic,
-            name=f"{disaster_type.name} Preparedness Plan",
+            name=f"{disaster_type.category} Preparedness Plan",
             description=f"A comprehensive preparedness plan for {disaster_type.name.lower()}s.",
-            disaster_type=f"{disaster_type.category}",
+            disaster_type=disaster_type.category,
             preparation_steps=protocol['preparation_steps'],
             response_steps=protocol['response_steps'],
             recovery_steps=protocol['recovery_steps'],

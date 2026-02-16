@@ -33,6 +33,7 @@ class DisasterPlan(models.Model):
     description = models.TextField(blank=True, null=True)
     disaster_type = models.ForeignKey(DisasterType, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    common_regions = models.JSONField(default=list)  # List of regions commonly affected by this disaster type
     preparation_steps = models.JSONField(default=list)  # List of preparation steps
     response_steps = models.JSONField(default=list)     # List of response steps
     recovery_steps = models.JSONField(default=list)     # List of recovery steps
