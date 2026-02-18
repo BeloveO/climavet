@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'clinics',
     'disasterplans',
+    'resourcechecklists',
 ]
 
 MIDDLEWARE = [
