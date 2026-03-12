@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useServiceTypes, useClinicTypes, useSpeciesTypes } from './hooks/useMetaData';
+import { useServiceTypes, useClinicTypes, useSpeciesTypes } from '../hooks/useMetaData';
 
 const ClinicInfoStep = ({ onDataChange }) => {
     const { clinicTypes, loading: clinicTypesLoading } = useClinicTypes();

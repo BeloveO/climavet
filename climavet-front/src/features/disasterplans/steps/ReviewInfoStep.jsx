@@ -1,5 +1,5 @@
 import ClinicInfoStep from './ClinicInfoStep';
-import LocationInfoStep from './LocationStep';
+import LocationInfoStep from './LocationInfoStep';
 
 const ReviewInfoStep = ({ planData }) => {
     return (

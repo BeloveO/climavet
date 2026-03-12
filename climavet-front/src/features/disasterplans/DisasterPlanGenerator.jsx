@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ClinicInfoStep } from './steps/ClinicInfoStep';
-import { LocationInfoStep } from './steps/LocationStep';
-import { ReviewInfoStep } from './steps/ReviewStep';
+import { LocationInfoStep } from './steps/LocationInfoStep';
+import { ReviewInfoStep } from './steps/ReviewInfoStep';
 import { useDisasterPlan } from './hooks/useDisasterPlan';
 
 export function DisasterPlanGenerator() {

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect, useSelector } from "react";
+
 
 const useClinicTypes = () => {
     const [clinicTypes, setClinicTypes] = useState([]);
