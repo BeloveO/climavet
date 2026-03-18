@@ -21,71 +21,61 @@ const ClinicInfoStep = ({ data, onNext, onUpdate }) => {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-                <label className="block text-sm font-medium mb-2">
-                    Facility Type
-                </label>
-                <select
-                    value={data.facility_type || ''}
-                    onChange={e => onUpdate({ facility_type: parseInt(e.target.value) })}
-                    className="w-full border rounded-lg p-2"
-                    required
-                >
-                    <option value="">Select facility type...</option>
-                    {clinicTypes.map(type => (
-                        <option key={type.id} value={type.id}>
-                            {type.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-              <div>
+      <div>
         <label className="block text-sm font-medium mb-2">
-          Services Provided (select all that apply)
+          Clinic Type
         </label>
-        <div className="space-y-2 max-h-60 overflow-y-auto border rounded-lg p-4">
-          {serviceTypes.map(service => (
-            <label key={service.id} className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={data.service_types.includes(service.id)}
-                onChange={e => {
-                  const newServices = e.target.checked
-                    ? [...data.service_types, service.id]
-                    : data.service_types.filter(id => id !== service.id);
-                  onUpdate({ service_types: newServices });
-                }}
-                className="rounded"
-              />
-              <span>{service.name}</span>
-            </label>
+        <select
+          value={data.clinic_type || ''}
+          onChange={(e) => onUpdate({ clinic_type: e.target.value })}
+          className="w-full border rounded-lg p-2"
+          required
+        >
+          <option value="">Select clinic type...</option>
+          {clinicTypes.map((type) => (
+            <option key={type.id} value={type.value}>
+              {type.label}
+            </option>
           ))}
-        </div>
+        </select>
       </div>
       
       <div>
         <label className="block text-sm font-medium mb-2">
-          Species Treated (select all that apply)
+          Service Type
         </label>
-        <div className="space-y-2 max-h-60 overflow-y-auto border rounded-lg p-4">
-          {speciesTypes.map(species => (
-            <label key={species.id} className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={data.species_treated.includes(species.id)}
-                onChange={e => {
-                  const newSpecies = e.target.checked
-                    ? [...data.species_treated, species.id]
-                    : data.species_treated.filter(id => id !== species.id);
-                  onUpdate({ species_treated: newSpecies });
-                }}
-                className="rounded"
-              />
-              <span>{species.name}</span>
-            </label>
+        <select
+          value={data.service_type || ''}
+          onChange={(e) => onUpdate({ service_type: e.target.value })}
+          className="w-full border rounded-lg p-2"
+          required
+        >
+          <option value="">Select service type...</option>
+          {serviceTypes.map((service) => (
+            <option key={service.id} value={service.value}>
+              {service.label}
+            </option>
           ))}
-        </div>
+        </select>
+      </div>
+      
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          Species Type
+        </label>
+        <select
+          value={data.species_type || ''}
+          onChange={(e) => onUpdate({ species_type: e.target.value })}
+          className="w-full border rounded-lg p-2"
+          required
+        >
+          <option value="">Select species type...</option>
+          {speciesTypes.map((species) => (
+            <option key={species.id} value={species.value}>
+              {species.label}
+            </option>
+          ))}
+        </select>
       </div>
       
       <button

@@ -27,14 +27,27 @@ const LocationInfoStep = ({ data, onUpdate, onNext, onBack }) => {
     <form onSubmit={handleSubmit} className="space-y-6">
         <div>
             <label className="block text-sm font-medium mb-2">
-            Clinic Location (City, Address)
+                Clinic Address
             </label>
             <input
             type="text"
-            value={data.location}
-            onChange={e => onUpdate({ location: e.target.value })}
+            value={data.address || ''}
+            onChange={e => onUpdate({ address: e.target.value })}
             className="w-full border rounded-lg p-2"
-            placeholder="e.g., Edmonton, AB"
+            placeholder="Street address, city"
+            required
+            />
+        </div>
+        <div>
+            <label className="block text-sm font-medium mb-2">
+            City
+            </label>
+            <input
+            type="text"
+            value={data.city || ''}
+            onChange={e => onUpdate({ city: e.target.value })}
+            className="w-full border rounded-lg p-2"
+            placeholder="e.g., Edmonton"
             required
             />
         </div>
@@ -50,12 +63,26 @@ const LocationInfoStep = ({ data, onUpdate, onNext, onBack }) => {
             >
                 <option value="">Select province...</option>
                 {PROVINCES.map(prov => (
-                    <option key={prov.code} value={prov.code}>
-                    {prov.name}
+                    <option key={prov.value} value={prov.value}>
+                    {prov.label}
                     </option>
                 ))}
             </select>
         </div>
+        <div>
+            <label className="block text-sm font-medium mb-2">
+                Postal Code
+            </label>
+            <input
+            type="text"
+            value={data.postal_code || ''}
+            onChange={e => onUpdate({ postal_code: e.target.value })}
+            className="w-full border rounded-lg p-2"
+            placeholder="e.g., A1A 1A1"
+            required
+            />
+        </div>
+
         <div className="border rounded-lg p-4 space-y-4">
             <h3 className="font-medium">Environmental Risk Factors</h3>
             <p className="text-sm text-gray-600">

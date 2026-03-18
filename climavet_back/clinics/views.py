@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, status, generics
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Clinic, RiskAssessment
 from .serializers import ClinicSerializer, RiskAssessmentSerializer
@@ -13,6 +14,74 @@ class ClinicViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned clinics to a given province or clinic type,
+        by filtering against query parameters in the URL.
+
+        :return: A queryset of Clinic instances filtered by province and/or clinic type if specified.
+        """
+        queryset = super().get_queryset()
+        province = self.request.query_params.get('province')
+        clinic_type = self.request.query_params.get('clinic_type')
+        
+        if province:
+            queryset = queryset.filter(province__iexact=province)
+        if clinic_type:
+            queryset = queryset.filter(clinic_type__iexact=clinic_type)
+        
+        return queryset
+    
+    @action(detail=False, methods=['get'], url_path='clinic-types', permission_classes=[permissions.AllowAny])
+    def clinic_types(self, request):
+        """
+        Retrieve a list of unique clinic types available in the system.
+
+        :return: A response containing a list of unique clinic types.
+        """
+        return Response([
+            {"id": i, "value": choice[0], "label": choice[1]} 
+            for i, choice in enumerate(Clinic.CLINIC_TYPES)
+        ])
+    
+    @action(detail=False, methods=['get'], url_path='provinces', permission_classes=[permissions.AllowAny])
+    def provinces(self, request):
+        """
+        Retrieve a list of unique provinces where clinics are located.
+
+        :return: A response containing a list of unique provinces.
+        """
+        provinces = Clinic.objects.values_list('province', flat=True).distinct()
+        return Response([
+            {"id": i, "value": province, "label": province} 
+            for i, province in enumerate(provinces)
+        ], status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], url_path='species-types', permission_classes=[permissions.AllowAny])
+    def species_types(self, request):
+        """
+        Retrieve a list of unique species treated by clinics.
+
+        :return: A response containing a list of unique species treated.
+        """
+        return Response([
+            {"id": i, "value": choice[0], "label": choice[1]} 
+            for i, choice in enumerate(Clinic.SPECIES_TYPES)
+        ])
+
+    @action(detail=False, methods=['get'], url_path='service-types', permission_classes=[permissions.AllowAny])
+    def service_types(self, request):
+        """
+        Retrieve a list of unique service types offered by clinics.
+
+        :return: A response containing a list of unique service types.
+        """
+        return Response([
+            {"id": i, "value": choice[0], "label": choice[1]} 
+            for i, choice in enumerate(Clinic.SERVICE_TYPES)
+        ])
+    
 
 class RiskAssessmentViewSet(viewsets.ModelViewSet):
     queryset = RiskAssessment.objects.all()
