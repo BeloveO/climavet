@@ -8,7 +8,7 @@ const ReviewInfoStep = ({ planData }) => {
             <div className="bg-gray-50 p-4 rounded-md">
                 <h3 className="text-lg font-medium">Clinic Information</h3>
                 <p><strong>Clinic ID:</strong> {planData.clinic_id}</p>
-                <p><strong>Facility Type:</strong> {planData.facility_type}</p>
+                <p><strong>Facility Type:</strong> {planData.clinic_type}</p>
                 <p><strong>Service Types:</strong> {planData.service_types.join(', ')}</p>
                 <p><strong>Species Treated:</strong> {planData.species_treated.join(', ')}</p>
             </div>

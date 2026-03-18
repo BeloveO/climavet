@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/home.jsx'
 import Raw from './pages/raw.jsx'
 import Dpg from './pages/dpg.jsx'
@@ -17,7 +17,7 @@ function App() {
         <Route path="/risk-assessment-wizard" element={<Raw />} />
         <Route path="/disaster-plan-generator" element={<Dpg />} />
         <Route path="/resource-checklist-builder" element={<Rcb />} />
-        <Route path="/disasterplan" element={<DisasterPlanGenerator />} />
+        <Route path="/disaster-plans" element={<DisasterPlanGenerator />} />
       </Routes>
     </BrowserRouter>
   )

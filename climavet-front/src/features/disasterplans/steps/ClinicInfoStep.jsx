@@ -1,104 +1,101 @@
-import { useState, useEffect } from 'react';
 import { useServiceTypes, useClinicTypes, useSpeciesTypes } from '../hooks/useMetaData';
 
-const ClinicInfoStep = ({ onDataChange }) => {
-    const { clinicTypes, loading: clinicTypesLoading } = useClinicTypes();
-    const { serviceTypes, loading: serviceTypesLoading } = useServiceTypes();
-    const { speciesTypes, loading: speciesTypesLoading } = useSpeciesTypes();
+
+
+const ClinicInfoStep = ({ data, onNext, onUpdate }) => {
+    const { clinicTypes } = useClinicTypes();
+    const { serviceTypes } = useServiceTypes();
+    const { speciesTypes } = useSpeciesTypes();
     
-    const [clinicId, setClinicId] = useState('');
-    const [facilityType, setFacilityType] = useState('');
-    const [selectedServiceTypes, setSelectedServiceTypes] = useState([]);
-    const [selectedSpecies, setSelectedSpecies] = useState([]);
-    
-    useEffect(() => {
-        onDataChange({
-            clinic_id: clinicId,
-            facility_type: facilityType,
-            service_types: selectedServiceTypes,
-            species_treated: selectedSpecies,
-        });
-    }, [clinicId, facilityType, selectedServiceTypes, selectedSpecies]);
-    
-    if (clinicTypesLoading || serviceTypesLoading || speciesTypesLoading) {
-        return <div>Loading...</div>;
-    }
-    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const clinicData = {
+            clinic_id: formData.get('clinic_id'),
+            clinic_type: formData.get('clinic_type'),
+            service_types: formData.getAll('service_types'),
+            species_treated: formData.getAll('species_treated'),
+        };
+        onNext(clinicData);
+    }; 
+
     return (
-        <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-                <label className="block text-sm font-medium text-gray-700">Clinic</label>
+                <label className="block text-sm font-medium mb-2">
+                    Facility Type
+                </label>
                 <select
-                    value={clinicId}
-                    onChange={(e) => setClinicId(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    value={data.facility_type || ''}
+                    onChange={e => onUpdate({ facility_type: parseInt(e.target.value) })}
+                    className="w-full border rounded-lg p-2"
+                    required
                 >
-                    <option value="">Select a clinic</option>
-                    {clinicTypes.map((clinic) => (
-                        <option key={clinic.id} value={clinic.id}>
-                            {clinic.name}
+                    <option value="">Select facility type...</option>
+                    {clinicTypes.map(type => (
+                        <option key={type.id} value={type.id}>
+                            {type.name}
                         </option>
                     ))}
                 </select>
             </div>
-            
-            <div>
-                <label className="block text-sm font-medium text-gray-700">Facility Type</label>
-                <select
-                    value={facilityType}
-                    onChange={(e) => setFacilityType(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                >
-                    <option value="">Select facility type</option>
-                    {clinicTypes.map((clinic) => (
-                        <option key={clinic.id} value={clinic.facility_type}>
-                            {clinic.facility_type}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            
-            <div>
-                <label className="block text-sm font-medium text-gray-700">Service Types</label>
-                <select
-                    multiple
-                    value={selectedServiceTypes}
-                    onChange={(e) => {
-                        const options = Array.from(e.target.options);
-                        const selected = options.filter(o => o.selected).map(o => o.value);
-                        setSelectedServiceTypes(selected);
-                    }}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                >
-                    {serviceTypes.map((service) => (
-                        <option key={service.id} value={service.id}>
-                            {service.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            
-            <div>
-                <label className="block text-sm font-medium text-gray-700">Species Treated</label>
-                <select
-                    multiple
-                    value={selectedSpecies}
-                    onChange={(e) => {
-                        const options = Array.from(e.target.options);
-                        const selected = options.filter(o => o.selected).map(o => o.value);
-                        setSelectedSpecies(selected);
-                    }}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                >
-                    {speciesTypes.map((species) => (
-                        <option key={species.id} value={species.id}>
-                            {species.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
+
+              <div>
+        <label className="block text-sm font-medium mb-2">
+          Services Provided (select all that apply)
+        </label>
+        <div className="space-y-2 max-h-60 overflow-y-auto border rounded-lg p-4">
+          {serviceTypes.map(service => (
+            <label key={service.id} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={data.service_types.includes(service.id)}
+                onChange={e => {
+                  const newServices = e.target.checked
+                    ? [...data.service_types, service.id]
+                    : data.service_types.filter(id => id !== service.id);
+                  onUpdate({ service_types: newServices });
+                }}
+                className="rounded"
+              />
+              <span>{service.name}</span>
+            </label>
+          ))}
         </div>
-    );
-};
+      </div>
+      
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          Species Treated (select all that apply)
+        </label>
+        <div className="space-y-2 max-h-60 overflow-y-auto border rounded-lg p-4">
+          {speciesTypes.map(species => (
+            <label key={species.id} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={data.species_treated.includes(species.id)}
+                onChange={e => {
+                  const newSpecies = e.target.checked
+                    ? [...data.species_treated, species.id]
+                    : data.species_treated.filter(id => id !== species.id);
+                  onUpdate({ species_treated: newSpecies });
+                }}
+                className="rounded"
+              />
+              <span>{species.name}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+      
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+      >
+        Next: Location & Risks
+      </button>
+    </form>
+  );
+}
 
 export default ClinicInfoStep;

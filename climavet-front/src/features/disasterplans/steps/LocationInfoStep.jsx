@@ -16,59 +16,96 @@ const PROVINCES = [
   { value: 'YT', label: 'Yukon' }
 ];
 
-const LocationInfoStep = ({ locationInfo, setLocationInfo }) => {
-  const handleChange = (field) => (e) => {
-    setLocationInfo({ ...locationInfo, [field]: e.target.value });
+const LocationInfoStep = ({ data, onUpdate, onNext, onBack }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onNext();
   };
 
+  
   return (
-    <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Address</label>
-        <input
-          type="text"
-          value={locationInfo.address}
-          onChange={handleChange('address')}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700">City</label>
-        <input
-          type="text"
-          value={locationInfo.city}
-          onChange={handleChange('city')}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Province</label>
-        <select
-          value={locationInfo.province}
-          onChange={handleChange('province')}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Select a province</option>
-          {PROVINCES.map((prov) => (
-            <option key={prov.value} value={prov.value}>
-              {prov.label}
-            </option>
-          ))}
-        </select>
-      </div>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Postal Code</label>
-        <input
-          type="text"
-          value={locationInfo.postalCode}
-          onChange={handleChange('postalCode')}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-    </div>
+    <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+            <label className="block text-sm font-medium mb-2">
+            Clinic Location (City, Address)
+            </label>
+            <input
+            type="text"
+            value={data.location}
+            onChange={e => onUpdate({ location: e.target.value })}
+            className="w-full border rounded-lg p-2"
+            placeholder="e.g., Edmonton, AB"
+            required
+            />
+        </div>
+        <div>
+            <label className="block text-sm font-medium mb-2">
+                Province/Territory
+            </label>
+            <select
+            value={data.province}
+            onChange={e => onUpdate({ province: e.target.value })}
+            className="w-full border rounded-lg p-2"
+            required
+            >
+                <option value="">Select province...</option>
+                {PROVINCES.map(prov => (
+                    <option key={prov.code} value={prov.code}>
+                    {prov.name}
+                    </option>
+                ))}
+            </select>
+        </div>
+        <div className="border rounded-lg p-4 space-y-4">
+            <h3 className="font-medium">Environmental Risk Factors</h3>
+            <p className="text-sm text-gray-600">
+                Select any risks that apply to your location:
+            </p>
+            
+            <label className="flex items-center space-x-2">
+                <input
+                    type="checkbox"
+                    checked={data.is_flood_zone}
+                    onChange={e => onUpdate({ is_flood_zone: e.target.checked })}
+                    className="rounded"
+                />
+                <span>Located in flood zone or near water bodies</span>
+            </label>
+            <label className="flex items-center space-x-2">
+                <input
+                    type="checkbox"
+                    checked={data.is_wildfire_zone}
+                    onChange={e => onUpdate({ is_wildfire_zone: e.target.checked })}
+                    className="rounded"
+                />
+                <span>In or near wildfire-prone area (forest/grassland interface)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+                <input
+                    type="checkbox"
+                    checked={data.is_earthquake_zone}
+                    onChange={e => onUpdate({ is_earthquake_zone: e.target.checked })}
+                    className="rounded"
+                />
+                <span>In seismically active zone</span>
+            </label>
+        </div>
+        <div className="flex space-x-4">
+            <button
+            type="button"
+            onClick={onBack}
+            className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
+            >
+                Back
+            </button>
+            <button
+            type="submit"
+            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+            >
+                Next: Review
+            </button>
+        </div>
+    </form>
   );
 }
 

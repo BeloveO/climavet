@@ -1,16 +1,16 @@
 // src/features/disaster-plan/DisasterPlanGenerator.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ClinicInfoStep } from './steps/ClinicInfoStep';
-import { LocationInfoStep } from './steps/LocationInfoStep';
-import { ReviewInfoStep } from './steps/ReviewInfoStep';
+import ClinicInfoStep from './steps/ClinicInfoStep';
+import LocationInfoStep from './steps/LocationInfoStep';
+import ReviewInfoStep from './steps/ReviewInfoStep';
 import { useDisasterPlan } from './hooks/useDisasterPlan';
 
 export function DisasterPlanGenerator() {
   const [currentStep, setCurrentStep] = useState(1);
   const [planData, setPlanData] = useState({
     clinic_id: '',
-    facility_type: null,
+    clinic_type: null,
     service_types: [],
     species_treated: [],
     location: '',

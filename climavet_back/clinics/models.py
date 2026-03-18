@@ -12,9 +12,13 @@ class Clinic(models.Model):
         ("ANIMAL_SHELTER", "Animal Shelter"),
         ("TEACHING_HOSPITAL", "Teaching Hospital"),
         ("WILDLIFE_FACILITY", "Wildlife Facility"),
+        ("SMALL_ANIMAL_CLINIC", "Small Animal Clinic"),
+        ("LARGE_ANIMAL_CLINIC", "Large Animal Clinic"),
+        ("MIXED_ANIMAL_CLINIC", "Mixed Animal Clinic"),
     ]
     SPECIES_TYPES = [
         ("SMALL_ANIMAL", "Small Animal"),
+        ("LARGE_ANIMAL", "Large Animal"),
         ("EQUINE", "Equine"),
         ("FELINE", "Feline"),
         ("MIXED", "Mixed"),

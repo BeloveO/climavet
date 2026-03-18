@@ -1,33 +1,55 @@
-import { useState, useEffect, useSelector } from "react";
+// src/features/disaster-plan/hooks/useDisasterPlan.ts
+import { useState } from 'react';
+import axios from 'axios';
 
 
-const useDisasterPlan = (disasterPlanId) => {
-    const [disasterPlan, setDisasterPlan] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const clinicId = useSelector((state) => state.clinic.id);
+const useDisasterPlan = (planId = undefined) => {
+  const [plan, setPlan] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  const generatePlan = async (data) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await axios.post('/api/disaster-plans/', data);
+      setPlan(response.data);
+      return response.data;
+    } catch (err) {
+      setError(err.message);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const downloadPDF = async () => {
+    try {
+      const response = await axios.get(
+        `/api/disaster-plans/${planId}/download_pdf/`,
+        { responseType: 'blob' }
+      );
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `disaster-plan-${planId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error('PDF download failed:', err);
+    }
+  };
+  
+  return {
+    plan,
+    isLoading,
+    error,
+    generatePlan,
+    downloadPDF
+  };
+}
 
-    useEffect(() => {
-        if (disasterPlanId) {
-            fetch(`/api/disaster-plans/${disasterPlanId}?clinic_id=${clinicId}`)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch disaster plan");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    setDisasterPlan(data);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    setError(err.message || "Failed to fetch disaster plan");
-                    setLoading(false);
-                });
-        }
-    }, [disasterPlanId, clinicId]);
-
-    return { disasterPlan, loading, error };
-};
-
-export default useDisasterPlan;
+export { useDisasterPlan };

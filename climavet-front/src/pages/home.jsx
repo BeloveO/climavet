@@ -40,8 +40,9 @@
                     <Link to="/resource-checklist-builder">Resource Checklist Builder</Link>
                 </button>
                 <button>
-                    <Link to="/disasterplan">Disasterplan</Link>
+                    <Link to="/disaster-plans/">View Sample Plan</Link>
                 </button>
+                
             </div>
 		</div>
 		<div>

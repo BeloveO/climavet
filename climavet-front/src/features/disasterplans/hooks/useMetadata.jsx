@@ -1,31 +1,18 @@
-import { useState, useEffect, useSelector } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 
 const useClinicTypes = () => {
     const [clinicTypes, setClinicTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const clinicId = useSelector((state) => state.clinic.id);
 
     useEffect(() => {
-        if (clinicId) {
-            fetch(`/api/clinic-types?clinic_id=${clinicId}`)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch clinic types");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    setClinicTypes(data);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    setError(err.message || "Failed to fetch clinic types");
-                    setLoading(false);
-                });
-        }
-    }, [clinicId]);
+        axios.get("/api/clinics/clinic-types")
+        .then(response => setClinicTypes(response.data))
+        .catch(err => setError(err.response?.data?.message || "Failed to fetch clinic types"))
+        .finally(() => setLoading(false));
+    }, []);
 
     return { clinicTypes, loading, error };
 };
@@ -34,27 +21,13 @@ const useServiceTypes = () => {
     const [serviceTypes, setServiceTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const clinicId = useSelector((state) => state.clinic.id);
 
     useEffect(() => {
-        if (clinicId) {
-            fetch(`/api/service-types?clinic_id=${clinicId}`)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch service types");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    setServiceTypes(data);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    setError(err.message || "Failed to fetch service types");
-                    setLoading(false);
-                });
-        }
-    }, [clinicId]);
+        axios.get("/api/clinics/service-types")
+        .then(response => setServiceTypes(response.data))
+        .catch(err => setError(err.response?.data?.message || "Failed to fetch service types"))
+        .finally(() => setLoading(false));
+    }, []);
 
     return { serviceTypes, loading, error };
 };
@@ -63,27 +36,13 @@ const useSpeciesTypes = () => {
     const [speciesTypes, setSpeciesTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const clinicId = useSelector((state) => state.clinic.id);
 
     useEffect(() => {
-        if (clinicId) {
-            fetch(`/api/species-types?clinic_id=${clinicId}`)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch species types");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    setSpeciesTypes(data);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    setError(err.message || "Failed to fetch species types");
-                    setLoading(false);
-                });
-        }
-    }, [clinicId]);
+        axios.get("/api/clinics/species-types")
+        .then(response => setSpeciesTypes(response.data))
+        .catch(err => setError(err.response?.data?.message || "Failed to fetch species types"))
+        .finally(() => setLoading(false));
+    }, []);
 
     return { speciesTypes, loading, error };
 };

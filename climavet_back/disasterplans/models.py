@@ -32,7 +32,10 @@ class DisasterPlan(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     disaster_type = models.ForeignKey(DisasterType, on_delete=models.CASCADE)
+    risk_score = models.FloatField(default=0.0)
+    is_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     common_regions = models.JSONField(default=list)  # List of regions commonly affected by this disaster type
     preparation_steps = models.JSONField(default=list)  # List of preparation steps
     response_steps = models.JSONField(default=list)     # List of response steps
@@ -42,5 +45,45 @@ class DisasterPlan(models.Model):
     training_requirements = models.JSONField(default=list) # List of training requirements
 
     
+class DisasterScenario(models.Model):
+    """Model to represent a specific disaster scenario, which can be used for training and simulation purposes."""
+    plan = models.ForeignKey(DisasterPlan, on_delete=models.CASCADE, related_name='scenarios')
+    disaster_type = models.ForeignKey(DisasterType, on_delete=models.CASCADE)
     
+    # Risk assessment
+    likelihood = models.CharField(
+        max_length=20,
+        choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High')]
+    )
+    severity = models.CharField(
+        max_length=20,
+        choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High')]
+    )
     
+    # Generated action plans
+    preparation_steps = models.JSONField(default=list)
+    # ["Create evacuation plan", "Stock emergency supplies", ...]
+    
+    immediate_actions = models.JSONField(default=list)
+    # Actions to take when disaster is imminent
+    
+    during_disaster = models.JSONField(default=list)
+    # Actions during the event
+    
+    recovery_steps = models.JSONField(default=list)
+    # Post-disaster recovery
+    
+    critical_supplies = models.JSONField(default=list)
+    # Supplies needed for this disaster
+    
+    evacuation_protocols = models.JSONField(default=dict)
+    # Species-specific evacuation instructions
+    
+    equipment_protection = models.JSONField(default=list)
+    # How to protect critical equipment
+    
+    communication_plan = models.JSONField(default=dict)
+    # Emergency contacts, staff notification
+    
+    class Meta:
+        unique_together = ['plan', 'disaster_type']
