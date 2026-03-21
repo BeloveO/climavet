@@ -1,8 +1,9 @@
-import ClinicInfoStep from './ClinicInfoStep';
-import LocationInfoStep from './LocationInfoStep';
+// src/features/disaster-plan/steps/ReviewInfoStep.jsx
 import { useClinicTypes, useServiceTypes, useSpeciesTypes } from '../hooks/useMetaData';
 
-const ReviewInfoStep = ({ planData, onBack, onSubmit, isLoading }) => {
+const ReviewInfoStep = ({ planData = {}, onBack, onSubmit, isLoading }) => {
+
+    console.log('ReviewInfoStep - planData:', planData);
     // Fetch metadata to convert IDs to names
     const { clinicTypes = [], isLoading: loadingClinics } = useClinicTypes();
     const { serviceTypes = [], isLoading: loadingServices } = useServiceTypes();
@@ -11,27 +12,44 @@ const ReviewInfoStep = ({ planData, onBack, onSubmit, isLoading }) => {
     // Check if still loading metadata
     const isLoadingMetadata = loadingClinics || loadingServices || loadingSpecies;
 
+    // Safely access planData properties with default values
+    const {
+        clinic_type = null,
+        service_types = [],
+        species_types = [],
+        address = '',
+        province = '',
+        city = '',
+        is_flood_zone = false,
+        is_wildfire_zone = false,
+        is_earthquake_zone = false
+    } = planData;
+
     // Helper functions to convert IDs to names with safety checks
     const getClinicTypeName = () => {
         if (!clinicTypes || clinicTypes.length === 0) return 'Loading...';
-        const clinic = clinicTypes.find(f => f.id === planData.clinic_type);
-        return clinic?.name || 'Not selected';
-    };
+        const clinic = clinicTypes.find(f => String(f.id) === String(clinic_type));
+        return clinic?.label || clinic?.name || 'Not selected';
+    }
 
     const getServiceTypeNames = () => {
         if (!serviceTypes || serviceTypes.length === 0) return 'Loading...';
+        if (!service_types || service_types.length === 0) return 'None selected';
+        
         const names = serviceTypes
-            .filter(s => planData.service_types?.includes(s.id))
-            .map(s => s.name)
+            .filter(s => service_types.includes(s.id))
+            .map(s => s.label)
             .join(', ');
         return names || 'None selected';
     };
 
     const getSpeciesNames = () => {
         if (!speciesTypes || speciesTypes.length === 0) return 'Loading...';
+        if (!species_types || species_types.length === 0) return 'None selected';
+        
         const names = speciesTypes
-            .filter(s => planData.species_types?.includes(s.id))
-            .map(s => s.name)
+            .filter(s => species_types.includes(s.id))
+            .map(s => s.label)
             .join(', ');
         return names || 'None selected';
     };
@@ -70,7 +88,7 @@ const ReviewInfoStep = ({ planData, onBack, onSubmit, isLoading }) => {
                 </h3>
                 <dl className="space-y-3">
                     <div>
-                        <dt className="text-sm font-medium text-gray-600">Facility Type</dt>
+                        <dt className="text-sm font-medium text-gray-600">Clinic Type</dt>
                         <dd className="mt-1 text-gray-900">{getClinicTypeName()}</dd>
                     </div>
                     <div>
@@ -91,26 +109,30 @@ const ReviewInfoStep = ({ planData, onBack, onSubmit, isLoading }) => {
                 </h3>
                 <dl className="space-y-3">
                     <div>
-                        <dt className="text-sm font-medium text-gray-600">Location</dt>
-                        <dd className="mt-1 text-gray-900">{planData.address || 'Not provided'}</dd>
+                        <dt className="text-sm font-medium text-gray-600">Address</dt>
+                        <dd className="mt-1 text-gray-900">{address || 'Not provided'}</dd>
+                    </div>
+                    <div>
+                        <dt className=""text-sm font-medium text-gray-600>City</dt>
+                        <dd className="mt-1 text-gray-900">{city || 'Not provided'}</dd>
                     </div>
                     <div>
                         <dt className="text-sm font-medium text-gray-600">Province/Territory</dt>
-                        <dd className="mt-1 text-gray-900">{planData.province || 'Not selected'}</dd>
+                        <dd className="mt-1 text-gray-900">{province || 'Not selected'}</dd>
                     </div>
                     <div className="pt-2 border-t border-green-200">
                         <dt className="text-sm font-medium text-gray-600 mb-2">Environmental Risks</dt>
                         <dd className="space-y-2">
                             <div className="flex items-center">
-                                <span className={`w-4 h-4 rounded-full mr-2 ${planData.is_flood_zone ? 'bg-blue-500' : 'bg-gray-300'}`}></span>
+                                <span className={`w-4 h-4 rounded-full mr-2 ${is_flood_zone ? 'bg-blue-500' : 'bg-gray-300'}`}></span>
                                 <span className="text-gray-900">Flood Zone</span>
                             </div>
                             <div className="flex items-center">
-                                <span className={`w-4 h-4 rounded-full mr-2 ${planData.is_wildfire_zone ? 'bg-orange-500' : 'bg-gray-300'}`}></span>
+                                <span className={`w-4 h-4 rounded-full mr-2 ${is_wildfire_zone ? 'bg-orange-500' : 'bg-gray-300'}`}></span>
                                 <span className="text-gray-900">Wildfire Zone</span>
                             </div>
                             <div className="flex items-center">
-                                <span className={`w-4 h-4 rounded-full mr-2 ${planData.is_earthquake_zone ? 'bg-yellow-500' : 'bg-gray-300'}`}></span>
+                                <span className={`w-4 h-4 rounded-full mr-2 ${is_earthquake_zone ? 'bg-yellow-500' : 'bg-gray-300'}`}></span>
                                 <span className="text-gray-900">Earthquake Zone</span>
                             </div>
                         </dd>
@@ -119,7 +141,7 @@ const ReviewInfoStep = ({ planData, onBack, onSubmit, isLoading }) => {
             </div>
 
             {/* Warning if no risks selected */}
-            {!planData.is_flood_zone && !planData.is_wildfire_zone && !planData.is_earthquake_zone && (
+            {!is_flood_zone && !is_wildfire_zone && !is_earthquake_zone && (
                 <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4">
                     <div className="flex">
                         <span className="text-yellow-600 mr-2">⚠️</span>
