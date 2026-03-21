@@ -1,302 +1,175 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Container, Typography, Button, CircularProgress } from '@mui/material';
-import { CheckCircle } from '@mui/icons-material';
+// src/pages/PlanTypeSelector.jsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+const Dpg = () => {
+    const navigate = useNavigate();
+    const [selectedType, setSelectedType] = useState(null);
+    const [showDetails, setShowDetails] = useState(false);
 
-function Dpg() {
-    const [disasterTypes, setDisasterTypes] = useState([]);
-    const [selectedDisasterType, setSelectedDisasterType] = useState('');
-    const [generating, setGeneratingPlan] = useState(null);
-    const [plan, setPlan] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [editMode, setEditMode] = useState(false);
-    const [error, setError] = useState(null);
-    const steps = [
-        'Select Disaster Type',
-        'Generating Plan',
-        'Review & Finalize'
-    ];
-
-    useEffect(() => {
-        // Fetch disaster types from the backend
-        axios.get('/api/disaster-plans/types/')
-            .then(response => {
-                setDisasterTypes(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching disaster types:', error);
-                setError('Failed to load disaster types. Please try again later.');
-            });
-    }, []);
-
-    const handleGeneratePlan = () => {
-        if (!selectedDisasterType) {
-            setError('Please select a disaster type before generating a plan.');
-            return;
+    const plans = {
+        generic: {
+            title: 'Generic Plan',
+            description: 'A standard template that works for any veterinary clinic',
+            details: 'Perfect if you need a basic disaster plan quickly. The generic plan covers essential emergency procedures, staff evacuation, and basic resource management.',
+            icon: '📋',
+            color: 'blue'
+        },
+        customized: {
+            title: 'Customized Plan',
+            description: 'Tailored to your clinic\'s specific needs, location, and risks',
+            details: 'Ideal for clinics that want comprehensive coverage. The customized plan considers your clinic type, services, species treated, location risks, and available resources to create a detailed, actionable plan.',
+            icon: '🎯',
+            color: 'purple'
         }
-        setError(null);
-        setGeneratingPlan(true);
-        setLoading(true);
-        console.log('Selected disaster type ID:', selectedDisasterType);
-
-        // Function to get CSRF token from cookies
-        // function getCookie(name) {
-        //    let cookieValue = null;
-        //    if (document.cookie && document.cookie !== '') {
-        //        const cookies = document.cookie.split(';');
-        //       for (let i = 0; i < cookies.length; i++) {
-        //            const cookie = cookies[i].trim();
-        //            // Does this cookie string begin with the name we want?
-        //            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        //                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        //                break;
-        //            }
-        //        }
-        //    }
-        //    return cookieValue;
-        //}
-        
-        //const csrftoken = getCookie('csrftoken');
-
-
-        axios.get('/api/disaster-plans/plans/generate/', {
-            params: {
-                disaster_type: selectedDisasterType
-            },
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => {
-                console.log('Generated plan:', response.data);
-                setPlan(response.data);
-                setGeneratingPlan(false);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error generating disaster plan:', error);
-                setError('Failed to generate disaster plan. Please try again later.');
-                setGeneratingPlan(false);
-                setLoading(false);
-            });
     };
 
-    const handleEditPlan = () => {
-        setEditMode(true);
-    };
-
-    const handleSavePlan = () => {
-        // Implement save functionality here (e.g., send updated plan to backend)
-        setEditMode(false);
-    };
-
-    const renderStepIndicator = () => {
-        return (
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                {steps.map((step, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
-                        <div
-                            style={{
-                                width: '30px',
-                                height: '30px',
-                                borderRadius: '50%',
-                                backgroundColor: index <= (generating ? 1 : 0) ? '#4caf50' : '#ccc',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: '#fff',
-                                fontWeight: 'bold'
-                            }}
-                        >
-                            {index + 1}
-                        </div>
-                        <Typography variant="body1" style={{ marginLeft: '8px' }}>
-                            {step}
-                        </Typography>
-                    </div>
-                ))}
-            </div>
-        );
+    const handleStart = () => {
+        if (selectedType === 'generic') {
+            navigate('/generic-disaster-plans');
+        } else if (selectedType === 'customized') {
+            navigate('/custom-disaster-plans');
+        }
     };
 
     return (
-        <Container maxWidth="md" style={{ marginTop: '40px' }}>
-            <Typography variant="h4" gutterBottom>
-                Disaster Plan Generator
-            </Typography>
-            {renderStepIndicator()}
-            {error && <Typography color="error">{error}</Typography>}
-            {!generating && (
-                <>
-                    <Typography variant="h6" gutterBottom>
-                        Select Disaster Type
-                    </Typography>
-                    <select
-                        value={selectedDisasterType}
-                        onChange={(e) => setSelectedDisasterType(e.target.value)}
-                        style={{ padding: '10px', fontSize: '16px', width: '100%', marginBottom: '20px' }}
+        <div className="min-h-screen bg-gray-50">
+            <div className="max-w-4xl mx-auto py-12 px-4">
+                {/* Progress Indicator */}
+                <div className="mb-8">
+                    <div className="flex items-center justify-center space-x-2 text-sm">
+                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                            1
+                        </span>
+                        <div className="w-12 h-0.5 bg-gray-300"></div>
+                        <span className="bg-gray-300 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                            2
+                        </span>
+                        <div className="w-12 h-0.5 bg-gray-300"></div>
+                        <span className="bg-gray-300 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                            3
+                        </span>
+                    </div>
+                    <div className="flex justify-center mt-2 text-sm text-gray-500">
+                        <span className="mx-6">Plan Type</span>
+                        <span className="mx-6">Information</span>
+                        <span className="mx-6">Generate</span>
+                    </div>
+                </div>
+
+                {/* Header */}
+                <div className="text-center mb-10">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                        Choose Your Plan Type
+                    </h1>
+                    <p className="text-gray-600">
+                        Select how detailed you want your disaster plan to be
+                    </p>
+                </div>
+
+                {/* Plan Options */}
+                <div className="space-y-4 mb-8">
+                    {Object.entries(plans).map(([type, plan]) => (
+                        <div
+                            key={type}
+                            className={`
+                                border rounded-lg transition-all cursor-pointer
+                                ${selectedType === type
+                                    ? `border-${plan.color}-500 ring-2 ring-${plan.color}-500 bg-${plan.color}-50`
+                                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                                }
+                            `}
+                            onClick={() => {
+                                setSelectedType(type);
+                                setShowDetails(false);
+                            }}
+                        >
+                            <div className="p-6">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center space-x-4">
+                                        <span className="text-3xl">{plan.icon}</span>
+                                        <div>
+                                            <h2 className="text-xl font-semibold text-gray-900">
+                                                {plan.title}
+                                            </h2>
+                                            <p className="text-gray-600 mt-1">
+                                                {plan.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex-shrink-0">
+                                        <div className={`
+                                            w-5 h-5 rounded-full border-2
+                                            ${selectedType === type
+                                                ? `bg-${plan.color}-500 border-${plan.color}-500`
+                                                : 'border-gray-300'
+                                            }
+                                        `}>
+                                            {selectedType === type && (
+                                                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                </svg>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {selectedType === type && !showDetails && (
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowDetails(true);
+                                        }}
+                                        className="mt-4 text-sm text-blue-600 hover:text-blue-700"
+                                    >
+                                        Learn more about this plan →
+                                    </button>
+                                )}
+                                
+                                {selectedType === type && showDetails && (
+                                    <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                                        <p className="text-gray-700 text-sm">{plan.details}</p>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setShowDetails(false);
+                                            }}
+                                            className="mt-2 text-sm text-blue-600 hover:text-blue-700"
+                                        >
+                                            Show less
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-between">
+                    <button
+                        onClick={() => navigate('/dashboard')}
+                        className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                     >
-                        <option value="">-- Select a Disaster Type --</option>
-                        {disasterTypes.map((type) => (
-                            <option key={type.id} value={type.id}>
-                                {type.name}
-                            </option>
-                        ))}
-                    </select>
-                    <Button variant="contained" color="primary" onClick={handleGeneratePlan} disabled={!selectedDisasterType}>
-                        Generate Plan
-                    </Button>
-                </>
-            )}
-            {loading && (
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                    <CircularProgress />
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleStart}
+                        disabled={!selectedType}
+                        className={`
+                            px-6 py-2 rounded-lg font-medium
+                            ${selectedType
+                                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }
+                        `}
+                    >
+                        Start Planning →
+                    </button>
                 </div>
-            )}
-            {plan && !editMode && (
-                <div style={{ marginTop: '30px' }}>
-                    <Typography variant="h5" gutterBottom>
-                        {plan.name || 'Generated Disaster Plan'}
-                    </Typography>
-                    {plan.description && (
-                    <Typography variant="body1" style={{ marginBottom: '20px', fontStyle: 'italic' }}>
-                        {plan.description}
-                    </Typography>
-                    )}
-                    {/* Common Regions */}
-                    {plan.common_regions && plan.common_regions.length > 0 && (
-                        <div style={{ marginBottom: '20px' }}>
-                            <Typography variant="h6" gutterBottom>
-                                Commonly Affected Regions
-                            </Typography>
-                            <ul style={{ paddingLeft: '20px' }}>
-                                {plan.common_regions.map((region, index) => (
-                                    <li key={index} style={{ marginBottom: '8px' }}>
-                                        {region}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                     {/* Preparation Steps */}
-                    {plan.preparation_steps && plan.preparation_steps.length > 0 && (
-                        <div style={{ marginBottom: '20px' }}>
-                            <Typography variant="h6" gutterBottom>
-                                Preparation Steps
-                            </Typography>
-                            <ul style={{ paddingLeft: '20px' }}>
-                                {plan.preparation_steps.map((step, index) => (
-                                    <li key={index} style={{ marginBottom: '8px' }}>
-                                        {step}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    
-                    {/* Response Steps */}
-                    {plan.response_steps && plan.response_steps.length > 0 && (
-                        <div style={{ marginBottom: '20px' }}>
-                            <Typography variant="h6" gutterBottom>
-                                Response Steps
-                            </Typography>
-                            <ul style={{ paddingLeft: '20px' }}>
-                                {plan.response_steps.map((step, index) => (
-                                    <li key={index} style={{ marginBottom: '8px' }}>
-                                        {step}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    
-                    {/* Recovery Steps */}
-                    {plan.recovery_steps && plan.recovery_steps.length > 0 && (
-                        <div style={{ marginBottom: '20px' }}>
-                            <Typography variant="h6" gutterBottom>
-                                Recovery Steps
-                            </Typography>
-                            <ul style={{ paddingLeft: '20px' }}>
-                                {plan.recovery_steps.map((step, index) => (
-                                    <li key={index} style={{ marginBottom: '8px' }}>
-                                        {step}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    {/* Emergency Contacts */}
-                    {plan.emergency_contacts && plan.emergency_contacts.length > 0 && (
-                        <div style={{ marginBottom: '20px' }}>
-                            <Typography variant="h6" gutterBottom>
-                                Emergency Contacts
-                            </Typography>
-                            <ul style={{ paddingLeft: '20px' }}>
-                                {plan.emergency_contacts.map((contact, index) => (
-                                    <li key={index} style={{ marginBottom: '8px' }}>
-                                        <strong>{contact.name}:</strong> {contact.phone} ({contact.type})
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    
-                    {/* Supplies Needed */}
-                    {plan.supplies_needed && plan.supplies_needed.length > 0 && (
-                        <div style={{ marginBottom: '20px' }}>
-                            <Typography variant="h6" gutterBottom>
-                                Supplies Needed
-                            </Typography>
-                            <ul style={{ paddingLeft: '20px' }}>
-                                {plan.supplies_needed.map((supply, index) => (
-                                    <li key={index} style={{ marginBottom: '8px' }}>
-                                        <strong>{supply.item}:</strong> {supply.quantity} {supply.unit}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                
-                    {/* Training Requirements */}
-                    {plan.training_requirements && plan.training_requirements.length > 0 && (
-                        <div style={{ marginBottom: '20px' }}>
-                            <Typography variant="h6" gutterBottom>
-                                Training Requirements
-                            </Typography>
-                            <ul style={{ paddingLeft: '20px' }}>
-                                {plan.training_requirements.map((training, index) => (
-                                    <li key={index} style={{ marginBottom: '8px' }}>
-                                        {training}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    <Button variant="outlined" color="primary" onClick={handleEditPlan} style={{ marginRight: '10px' }}>
-                        Edit Plan
-                    </Button>
-                    <Button variant="contained" color="primary" onClick={handleSavePlan}>
-                        Save Plan
-                    </Button>
-                </div>
-            )}
-            {editMode && (
-                <div style={{ marginTop: '30px' }}>
-                    <Typography variant="h5" gutterBottom>
-                        Edit Disaster Plan
-                    </Typography>
-                    <textarea
-                        value={plan.plan_text}
-                        onChange={(e) => setPlan({ ...plan, plan_text: e.target.value })}
-                        style={{ width: '100%', height: '300px', padding: '10px', fontSize: '16px' }}
-                    />
-                    <Button variant="contained" color="primary" onClick={handleSavePlan} style={{ marginTop: '20px' }}>
-                        Save Changes
-                    </Button>
-                </div>
-            )}
-        </Container>
+            </div>
+        </div>
     );
-}
-export default Dpg
+};
+
+export default Dpg;

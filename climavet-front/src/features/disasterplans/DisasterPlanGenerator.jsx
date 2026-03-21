@@ -14,6 +14,7 @@ export function DisasterPlanGenerator() {
         service_types: [],
         species_types: [],
         location: '',
+        city: '',
         province: '',
         is_flood_zone: false,
         is_wildfire_zone: false,
@@ -23,10 +24,7 @@ export function DisasterPlanGenerator() {
     const { generatePlan, isLoading } = useDisasterPlan();
     const navigate = useNavigate();
 
-    // Debug - check state on every render
-    console.log('DisasterPlanGenerator - Step:', currentStep, 'Data:', planData);
-
-    // THIS IS CRITICAL - Function to update planData
+    // Function to update planData
     const updatePlanData = (newData) => {
         console.log('Updating planData with:', newData);
         setPlanData(prev => {

@@ -6,6 +6,7 @@ import Dpg from './pages/dpg.jsx'
 import Rcb from './pages/rcg.jsx'
 import About from './pages/about.jsx'
 import { DisasterPlanGenerator } from './features/disasterplans/DisasterPlanGenerator.jsx'
+import GenericDisasterPlans from './features/disasterplans/GenericDisasterPlanGenerator.jsx'
 
 function App() {
 
@@ -17,7 +18,8 @@ function App() {
         <Route path="/risk-assessment-wizard" element={<Raw />} />
         <Route path="/disaster-plan-generator" element={<Dpg />} />
         <Route path="/resource-checklist-builder" element={<Rcb />} />
-        <Route path="/disaster-plans" element={<DisasterPlanGenerator />} />
+        <Route path="/custom-disaster-plans" element={<DisasterPlanGenerator />} />
+        <Route path="/generic-disaster-plans" element={<GenericDisasterPlans />} />
       </Routes>
     </BrowserRouter>
   )
