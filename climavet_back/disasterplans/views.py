@@ -148,7 +148,7 @@ class ServiceTypeViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ServiceTypeSerializer
     permission_classes = [permissions.AllowAny]
 
-class SpeciesCategoryViewSet(viewsets.ReadOnlyModelViewSet):
+class SpeciesTypeViewSet(viewsets.ReadOnlyModelViewSet):
     """List species categories"""
     queryset = SpeciesTypes.objects.all()
     serializer_class = SpeciesTypeSerializer
