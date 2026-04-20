@@ -48,18 +48,18 @@ function GenericDisasterPlans() {
                 'Content-Type': 'application/json',
             }
         })
-            .then(response => {
-                console.log('Generated plan:', response.data);
-                setPlan(response.data);
-                setGeneratingPlan(false);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error generating disaster plan:', error);
-                setError('Failed to generate disaster plan. Please try again later.');
-                setGeneratingPlan(false);
-                setLoading(false);
-            });
+        .then(response => {
+            console.log('Generated plan:', response.data);
+            setPlan(response.data);
+            setGeneratingPlan(false);
+            setLoading(false);
+        })
+        .catch(error => {
+            console.error('Error generating disaster plan:', error);
+            setError('Failed to generate disaster plan. Please try again later.');
+            setGeneratingPlan(false);
+            setLoading(false);
+        });
     };
 
     const handleEditPlan = () => {

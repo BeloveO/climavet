@@ -5,8 +5,8 @@ from .views import (DisasterPlanViewSet, DisasterTypeViewSet,
 
 router = DefaultRouter()
 
-router.register(r'disaster-plans', DisasterPlanViewSet, basename='disaster-plan')
-router.register(r'disaster-types', DisasterTypeViewSet, basename='disaster-type')
+router.register(r'plans', DisasterPlanViewSet, basename='disaster-plan')
+router.register(r'types', DisasterTypeViewSet, basename='disaster-type')
 router.register(r'clinic-types', ClinicTypeViewSet, basename='clinic-type')
 router.register(r'service-types', ServiceTypeViewSet, basename='service-type')
 router.register(r'species-types', SpeciesTypeViewSet, basename='species-type')

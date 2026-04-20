@@ -28,7 +28,7 @@ class DisasterPlanSerializer(serializers.ModelSerializer):
         model = DisasterPlan
         fields = [
             'id', 'clinic', 'created_at', 'updated_at',
-            'clinic_type', 'clinic_type_name', 'service_types', 'species_treated',
+            'clinic_type', 'clinic_type_name', 'service_types', 'species_types',
             'location', 'province', 'is_flood_zone', 'is_wildfire_zone',
             'is_earthquake_zone', 'risk_score', 'is_completed', 'scenarios'
         ]
