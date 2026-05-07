@@ -1,15 +1,32 @@
-from django.shortcuts import render
-from rest_framework import viewsets, permissions, status, generics
+from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import DisasterPlan, DisasterType, ClinicTypes, ServiceTypes, SpeciesTypes, DisasterScenario
 from .services.plan_generator import DisasterPlanGenerator
-from datetime import datetime
 from .serializers import ( DisasterPlanSerializer, DisasterTypeSerializer, 
                           SpeciesTypeSerializer, ServiceTypeSerializer, 
                           ClinicTypeSerializer, DisasterPlanCreateSerializer)
-from clinics.models import Clinic
 from .data.disaster_protocols import DISASTER_PROTOCOLS
+
+
+DISASTER_NAME_TO_PROTOCOL = {
+    'Flash Flood': 'FLOOD',
+    'Flood': 'FLOOD',
+    'Wildfire': 'WILDFIRE',
+    'Forest Fire': 'WILDFIRE',
+    'Heat Wave': 'HEATWAVE',
+    'Extreme Heat': 'HEATWAVE',
+    'Power Outage': 'POWER_OUTAGE',
+    'Air Pollution': 'AIR_POLLUTION',
+    'Erosion': 'EROSION',
+    'Hurricane': 'HURRICANE',
+    'Tornado': 'TORNADO',
+    'Cold Wave': 'COLD_WAVE',
+    'Extreme Cold': 'COLD_WAVE',
+    'Blizzard': 'BLIZZARD',
+    'Earthquake': 'EARTHQUAKE',
+    'Avalanche': 'AVALANCHE',
+}
 
 # Create your views here.
 class DisasterPlanViewSet(viewsets.ModelViewSet):
@@ -73,10 +90,11 @@ class DisasterPlanViewSet(viewsets.ModelViewSet):
         This endpoint can be used to generate plans without needing to go through the full risk assessment process, 
         using predefined protocols as a starting point.
         """
-        if request.method == 'GET':
-            disaster_type_id = request.query_params.get('disaster_type')
-        else:
-            disaster_type_id = request.data.get('disaster_type')
+        disaster_type_id = (
+            request.query_params.get('disaster_type') 
+            if request.method == 'GET' 
+            else request.data.get('disaster_type')
+        )
         
         if not disaster_type_id:
             return Response(
@@ -86,11 +104,21 @@ class DisasterPlanViewSet(viewsets.ModelViewSet):
         
         try:
             disaster_type_obj = DisasterType.objects.get(id=int(disaster_type_id))
-            protocol = DISASTER_PROTOCOLS.get(disaster_type_obj.name)
+            
+            # Map the disaster type name to protocol key
+            protocol_key = DISASTER_NAME_TO_PROTOCOL.get(disaster_type_obj.name)
+            
+            if not protocol_key:
+                return Response(
+                    {'error': f'No protocol mapping found for "{disaster_type_obj.name}". Please contact administrator.'}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            protocol = DISASTER_PROTOCOLS.get(protocol_key)
             
             if not protocol:
                 return Response(
-                    {'error': f'No protocol found for {disaster_type_obj.name}'}, 
+                    {'error': f'No protocol found for {protocol_key}'}, 
                     status=status.HTTP_404_NOT_FOUND
                 )
             
@@ -102,7 +130,9 @@ class DisasterPlanViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
+            print(f"Error in generate: {str(e)}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
         # data = request.data
         #disaster_type_id = data.get('disaster_type')
