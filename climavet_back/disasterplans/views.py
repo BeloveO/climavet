@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import DisasterPlan, DisasterType, ClinicTypes, ServiceTypes, SpeciesTypes, DisasterScenario
-from .services.plan_generator import DisasterPlanGenerator
+from .services.plan_generator import IntelligentDisasterPlanGenerator as DisasterPlanGenerator
 from .serializers import ( DisasterPlanSerializer, DisasterTypeSerializer, 
                           SpeciesTypeSerializer, ServiceTypeSerializer, 
                           ClinicTypeSerializer, DisasterPlanCreateSerializer)

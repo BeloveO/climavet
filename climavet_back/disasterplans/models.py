@@ -7,15 +7,24 @@ from django.contrib.auth.models import User
 class ClinicTypes(models.Model):
     """Types of veterinary facilities"""
     name = models.CharField(max_length=100)
+    code = models.CharField(max_length=50, choices=Clinic.CLINIC_TYPES, unique=True, null=True)
     vulnerability_factors = models.JSONField(default=dict)
+    special_considerations = models.JSONField(default=list)
     
     def __str__(self):
         return self.name
+    
+    verbose_name = "Clinic Type"
 
 class ServiceTypes(models.Model):
     """Veterinary services offered"""
     name = models.CharField(max_length=100)
+    code = models.CharField(max_length=50, choices=Clinic.SERVICE_TYPES, unique=True, null=True)
     critical_equipment = models.JSONField(default=list)
+    backup_requirements = models.JSONField(default=list)
+    unavailability_impact = models.CharField(max_length=20,
+                                              choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('critical', 'Critical')],
+                                              default='medium')
     
     def __str__(self):
         return self.name
@@ -23,13 +32,17 @@ class ServiceTypes(models.Model):
 class SpeciesTypes(models.Model):
     """Species treated at clinic"""
     name = models.CharField(max_length=100)
+    code = models.CharField(max_length=50, choices= Clinic.SPECIES_TYPES, unique=True, null=True)
     evacuation_requirements = models.JSONField(default=dict)
+    critical_supplies = models.JSONField(default=dict)
+    evacuation_priority = models.IntegerField(default=3)  # lower number = higher priority for evacuation
+    handling_notes = models.TextField(blank=True, null=True)
     
     def __str__(self):
         return self.name
     
     class Meta:
-        verbose_name_plural = "Species categories"
+        verbose_name = "Species Category"
 
 class DisasterType(models.Model):
     name = models.CharField(max_length=100)
@@ -56,6 +69,7 @@ class DisasterType(models.Model):
 
 class DisasterPlan(models.Model):
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name='disaster_plans')
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_disaster_plans')
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     # Clinic characteristics
@@ -65,6 +79,7 @@ class DisasterPlan(models.Model):
     
     # Location details
     location = models.CharField(max_length=200, blank=True)
+    city = models.CharField(max_length=100, blank=True)
     province = models.CharField(max_length=50, blank=True)
     is_flood_zone = models.BooleanField(default=False)
     is_wildfire_zone = models.BooleanField(default=False)
@@ -73,9 +88,13 @@ class DisasterPlan(models.Model):
     disaster_type = models.ForeignKey(DisasterType, on_delete=models.CASCADE)
     risk_score = models.FloatField(default=0.0)
     is_completed = models.BooleanField(default=False)
+    vulnerabilities = models.JSONField(default=dict)  # Identified vulnerabilities for this clinic and disaster type
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     common_regions = models.JSONField(default=list)  # List of regions commonly affected by this disaster type
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"Disaster Plan for {self.clinic.name}"
@@ -95,7 +114,8 @@ class DisasterScenario(models.Model):
         max_length=20,
         choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High')]
     )
-    
+    risk_rationale = models.JSONField(default=dict)  # Explanation of how risk was assessed
+
     # Generated action plans
     preparation_steps = models.JSONField(default=list)
     # ["Create evacuation plan", "Stock emergency supplies", ...]
@@ -126,6 +146,8 @@ class DisasterScenario(models.Model):
     emergency_contacts = models.JSONField(default=list) # List of emergency contacts
     supplies_needed = models.JSONField(default=list)    # List of supplies needed
     training_requirements = models.JSONField(default=list) # List of training requirements
+    species_specific_actions = models.JSONField(default=dict) # Dict of species-specific actions
+    service_specific_actions = models.JSONField(default=dict) # Dict of service-specific actions
 
     
     class Meta:
