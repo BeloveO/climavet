@@ -1,3 +1,5 @@
+from urllib import request
+
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -51,24 +53,22 @@ class DisasterPlanViewSet(viewsets.ModelViewSet):
         return DisasterPlanSerializer
 
     def create(self, request, *args, **kwargs):
-        """
-        Create a new disaster plan and generate scenarios
-        """
-        # Use the create serializer
+        """Create intelligent disaster plan"""
         serializer = DisasterPlanCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        # Create the plan (without created_by for now)
+        # Create the plan
         plan = serializer.save(created_by=None)
         print(f"Plan created with ID: {plan.id}")
-
-        # Generate disaster scenarios
+        
+        # Generate with intelligent system
         try:
-            generator = DisasterPlanGenerator(plan)
+            from .services.plan_generator import IntelligentDisasterPlanGenerator
+            generator = IntelligentDisasterPlanGenerator(plan)
             plan = generator.generate()
-            print(f"Plan generated successfully with {plan.scenarios.count()} scenarios")
+            print(f"✅ Intelligent plan generated: {plan.scenarios.count()} scenarios")
         except Exception as e:
-            print(f"Error generating plan: {str(e)}")
+            print(f"❌ Error: {str(e)}")
             import traceback
             traceback.print_exc()
             plan.delete()
@@ -77,11 +77,9 @@ class DisasterPlanViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         
-        # Return complete plan with scenarios
         output_serializer = DisasterPlanSerializer(plan)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
-        
 
     @action(detail=False, methods=['post', 'get'], url_path='generate')
     def generate(self, request, *args, **kwargs):
