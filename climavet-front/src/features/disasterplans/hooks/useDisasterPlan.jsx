@@ -13,7 +13,7 @@ const useDisasterPlan = (planId = undefined) => {
     setError(null);
     
     try {
-      const response = await axios.post('/api/disaster-plans/', data);
+      const response = await axios.post('/api/disaster-plans/plans/', data);
       setPlan(response.data);
       return response.data;
     } catch (err) {

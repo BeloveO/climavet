@@ -32,7 +32,12 @@ DISASTER_NAME_TO_PROTOCOL = {
 
 # Create your views here.
 class DisasterPlanViewSet(viewsets.ModelViewSet):
-    queryset = DisasterPlan.objects.all()
+    queryset = DisasterPlan.objects.all().prefetch_related(
+        'scenarios', 
+        'scenarios__disaster_type',
+        'service_types',
+        'species_types'
+    )
     serializer_class = DisasterPlanSerializer
     permission_classes = [permissions.AllowAny]  # Adjust permissions as needed
 
@@ -54,31 +59,64 @@ class DisasterPlanViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """Create intelligent disaster plan"""
+        print("\n" + "="*80)
+        print("Received request to create disaster plan")
+        print("="*80)
+        print(f"Raw request data: {request.data}")
+        print(f"Data type: {type(request.data)}")
         serializer = DisasterPlanCreateSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+
+        print("Validating serializer...")
+        is_valid = serializer.is_valid()
+        print(f"Serializer valid: {is_valid}")
+        if not is_valid:
+            print("Serializer errors:")
+            for field, errors in serializer.errors.items():
+                print(f" - {field}: {errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        # Create the plan
-        plan = serializer.save(created_by=None)
-        print(f"Plan created with ID: {plan.id}")
+        print(f"✅ Validation passed!")
+        print(f"Validated data: {serializer.validated_data}")
+           
         
-        # Generate with intelligent system
         try:
+            # Create the plan
+            plan = serializer.save(created_by=None)
+            print(f"Plan created with ID: {plan.id}")
+
+            # Generate with intelligent system
+            print(f"\n🔄 Generating intelligent disaster plan...")
             from .services.plan_generator import IntelligentDisasterPlanGenerator
             generator = IntelligentDisasterPlanGenerator(plan)
             plan = generator.generate()
             print(f"✅ Intelligent plan generated: {plan.scenarios.count()} scenarios")
+
+            print(f"✅ Plan generated successfully!")
+            print(f"   Scenarios: {plan.scenarios.count()}")
+            print(f"   Risk score: {plan.risk_score}")
+            print("="*80 + "\n")
+            
+            output_serializer = DisasterPlanSerializer(plan)
+            return Response(output_serializer.data, status=status.HTTP_201_CREATED)
+            
         except Exception as e:
             print(f"❌ Error: {str(e)}")
             import traceback
             traceback.print_exc()
-            plan.delete()
+            print("="*80 + "\n")
+            
+            try:
+                plan.delete()
+            except:
+                pass
+            
             return Response(
-                {'error': f'Failed to generate plan: {str(e)}'}, 
+                {'error': str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         
-        output_serializer = DisasterPlanSerializer(plan)
-        return Response(output_serializer.data, status=status.HTTP_201_CREATED)
+        # output_serializer = DisasterPlanSerializer(plan)
+        # return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
 
     @action(detail=False, methods=['post', 'get'], url_path='generate')
