@@ -15,12 +15,18 @@
 ## Authors
 #### **Lead Developer**: Belove Olusola
 #### **Contributors**: See [CONTRIBUTORS.md]()
+
 ---
 
 ## Acknowledgement
 #### Environment Canada for Weather API
 #### Django and React Communities for excellent frameworks
 #### Veterinary professionals who provided domain expertise
+
+---
+
+## Support
+
 ---
 
 ## Show Your Support
