@@ -1,4 +1,4 @@
-# ClimmaVet: Climate-Resilient Veterinary Clinic Planner
+# ClimaVet: Climate-Resilient Veterinary Clinic Planner
 
 ## Overview
 #### ClimaVet is an intelligent disaster planning tool that helps veterinary clinic operators identify location-specific climate risks and generate actionable, customized mitigation strategies. By analyzing clinic characteristics, species treated, services offered, and environmental factors, ClimaVet produces comprehensive disaster plans tailored to each facility's unique vulnerabilities.
