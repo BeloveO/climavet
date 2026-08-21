@@ -7,6 +7,23 @@
 
 ---
 
+## Problem Statement
+
+According to the Canadian Veterinary Medical Association (CVMA), Climate Change is a priority area and veterinary clinics face increasing climate-related threats, yet most lack:
+- Systematic Risk Assessments tailored to their location and operations
+- Customized disaster plans accounting for species-specific evacuation needs
+- Actionable preparation steps for different disaster types
+- Species-specific protocols for safe animal evacuations
+- Equipment protection guidelines for valuable medical assets
+
+Generic disaster plans don't account for:
+- Differences between small animal clinics, large animal, facilities, and mobile services
+- Specific environmental vulnerabilities (flood zones, wildfire areas, seismic zones)
+- Critical service continuity requirements (emergency vs routine care)
+- Evacuation complexity for diverse species (Horses, exotic birds, small animals)
+
+---
+
 ## License
 #### This project is licensed under the MIT License. See the [LICENSE](https://github.com/BeloveO/climavet/blob/main/LICENSE) file for details
 
@@ -22,6 +39,7 @@
 #### Environment Canada for Weather API
 #### Django and React Communities for excellent frameworks
 #### Veterinary professionals who provided domain expertise
+#### All contributors and early testers
 
 ---
 
