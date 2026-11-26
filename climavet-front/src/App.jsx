@@ -5,6 +5,8 @@ import Raw from './pages/raw.jsx'
 import Dpg from './pages/dpg.jsx'
 import Rcb from './pages/rcg.jsx'
 import About from './pages/about.jsx'
+import Navigation from './pages/navigation.jsx'
+import Footer from './pages/footer.jsx'
 import { DisasterPlanGenerator } from './features/disasterplans/DisasterPlanGenerator.jsx'
 import GenericDisasterPlans from './features/disasterplans/GenericDisasterPlanGenerator.jsx'
 

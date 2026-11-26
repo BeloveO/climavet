@@ -1,4 +1,6 @@
 	import { Link } from 'react-router-dom'
+    import Navigation from './navigation'
+    import Footer from './footer'
 
 	function Home() {
 
@@ -41,35 +43,7 @@
 	return (
         <div className="min-h-screen flex flex-col bg-white text-slate-900 font-sans">
             {/* Navigation */}
-            <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
-                <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-                    <Link to="/" className="flex items-center gap-2">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-700 text-lg font-bold text-white">
-                            C
-                        </span>
-                        <span className="text-xl font-bold tracking-tight text-slate-900">ClimaVet</span>
-                    </Link>
-
-                    <div className="hidden items-center gap-8 md:flex">
-                        <a href="#how-it-works" className="text-sm font-medium text-slate-600 transition hover:text-emerald-700">
-                            How It Works
-                        </a>
-                        <a href="#resources" className="text-sm font-medium text-slate-600 transition hover:text-emerald-700">
-                            Resources
-                        </a>
-                        <a href="#contact" className="text-sm font-medium text-slate-600 transition hover:text-emerald-700">
-                            Contact Us
-                        </a>
-                    </div>
-                    <Link
-                        to="/get-started"
-                        className="rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800"
-                    >
-                        Get Started
-                    </Link>
-                </div>
-            </nav>
-		
+            <Navigation />
             <main className="flex-1">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden bg-linear-to-br from-emerald-900 via-emerald-800 to-teal-700 text-white">
@@ -180,17 +154,7 @@
             </main>
 
             { /* Footer */ }
-            <footer className="border-t border-slate-200 bg-white">
-                <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-slate-500 md:flex-row lg:px-8">
-                    <p>&copy; 2026 ClimaVet. All rights reserved.</p>
-                    <Link
-                        to="/privacy-policy"
-                        className="font-medium text-slate-600 transition hover:text-emerald-700"
-                    >
-                        Privacy Policy
-                    </Link>
-                </div>
-            </footer>
+            <Footer />
         </div>
 	)
 	}
