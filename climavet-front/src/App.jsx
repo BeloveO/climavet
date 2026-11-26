@@ -2,7 +2,7 @@ import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/home.jsx'
 import Raw from './pages/raw.jsx'
-import Dpg from './pages/dpg.jsx'
+import PlanTypeSelector from './pages/dpg.jsx'
 import Rcb from './pages/rcg.jsx'
 import About from './pages/about.jsx'
 import Navigation from './pages/navigation.jsx'
@@ -18,7 +18,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/risk-assessment-wizard" element={<Raw />} />
-        <Route path="/disaster-plan-generator" element={<Dpg />} />
+        <Route path="/disaster-plan-generator" element={<PlanTypeSelector />} />
         <Route path="/resource-checklist-builder" element={<Rcb />} />
         <Route path="/custom-disaster-plans" element={<DisasterPlanGenerator />} />
         <Route path="/generic-disaster-plans" element={<GenericDisasterPlans />} />

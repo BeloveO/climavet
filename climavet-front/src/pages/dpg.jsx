@@ -1,7 +1,6 @@
 // src/pages/PlanTypeSelector.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import Navigation from './navigation.jsx';
 import Footer from './footer.jsx';
 
 
@@ -57,7 +56,7 @@ const DEFAULT_STYLES = {
     detailBox: 'bg-slate-50 ring-1 ring-slate-200',
 }
 
-const Dpg = () => {
+const PlanTypeSelector = () => {
     const navigate = useNavigate();
     const [selectedType, setSelectedType] = useState(null);
     const [showDetails, setShowDetails] = useState(false);
@@ -72,7 +71,32 @@ const Dpg = () => {
 
     return (
         <div className="flex min-h-screen flex-col bg-white font-sans text-slate-900">
-            <Navigation />
+            <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+                <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
+                    <Link to="/" className="flex items-center gap-2">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-700 text-lg font-bold text-white">
+                            C
+                        </span>
+                        <span className="text-xl font-bold tracking-tight text-slate-900">ClimaVet</span>
+                    </Link>
+
+                    <div className="hidden items-center gap-8 md:flex">
+                        <Link to="/" className="text-sm font-medium text-slate-600 transition hover:text-emerald-700">
+                            Home
+                        </Link>
+                        <Link to="/dashboard" className="text-sm font-medium text-slate-600 transition hover:text-emerald-700">
+                            Dashboard
+                        </Link>
+                    </div>
+
+                    <button
+                        onClick={() => navigate('/dashboard')}
+                        className="rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </nav>
             <main className="flex-1">
                 { /* Hero Band */ }
                 <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-700 text-white">
@@ -225,4 +249,4 @@ const Dpg = () => {
     );
 };
 
-export default Dpg;
+export default PlanTypeSelector;
