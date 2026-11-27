@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Footer from '../../pages/footer.jsx'
+import Footer from '../../pages/footer'
 
 
 const STEPS = ['Select Disaster Type', 'Generating Plan', 'Review & Finalize']

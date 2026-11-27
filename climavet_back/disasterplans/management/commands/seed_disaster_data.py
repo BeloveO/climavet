@@ -1,61 +1,83 @@
-# plans/management/commands/seed_disaster_data.py
+# disasterplans/management/commands/seed_disaster_data.py
 from django.core.management.base import BaseCommand
+from django.db import transaction
+
 from disasterplans.models import DisasterType, ClinicTypes, ServiceTypes, SpeciesTypes
 
-class Command(BaseCommand):
-    help = 'Seed initial disaster planning data'
 
-    def handle(self, *args, **kwargs):
-        # Disaster Types
-        disasters = [
-            {'name': 'Flood', 'category': 'water', 'description': 'Water-based flooding disaster'},
-            {'name': 'Wildfire', 'category': 'fire', 'description': 'Forest or grassland fire'},
-            {'name': 'Hurricane', 'category': 'wind', 'description': 'Tropical cyclone'},
-            {'name': 'Tornado', 'category': 'wind', 'description': 'Violent rotating column of air'},
-            {'name': 'Earthquake', 'category': 'seismic', 'description': 'Ground shaking'},
-            {'name': 'Blizzard', 'category': 'winter', 'description': 'Severe snowstorm'},
-            {'name': 'Extreme Cold', 'category': 'temperature', 'description': 'Dangerously low temperatures'},
-            {'name': 'Extreme Heat', 'category': 'temperature', 'description': 'Dangerously high temperatures'},
-        ]
-        
-        for d in disasters:
-            DisasterType.objects.get_or_create(name=d['name'], defaults=d)
-        
-        # Facility Types
-        facilities = [
-            {'name': 'Standalone Clinic'},
-            {'name': 'Multi-story Building'},
-            {'name': 'Basement Facility'},
-            {'name': 'Mobile Clinic'},
-            {'name': 'Attached to Residence'},
-        ]
-        
-        for f in facilities:
-            ClinicTypes.objects.get_or_create(name=f['name'])
-        
-        # Service Types
-        services = [
-            {'name': 'Emergency Services'},
-            {'name': 'Routine Care'},
-            {'name': 'Surgery'},
-            {'name': 'Boarding'},
-            {'name': 'Grooming'},
-            {'name': 'Dental Care'},
-        ]
-        
-        for s in services:
-            ServiceTypes.objects.get_or_create(name=s['name'])
-        
-        # Species Categories
-        species = [
-            {'name': 'Small Mammals (Cats, Dogs, Rabbits)'},
-            {'name': 'Large Animals (Horses, Cattle)'},
-            {'name': 'Exotic Birds'},
-            {'name': 'Reptiles'},
-            {'name': 'Pocket Pets (Hamsters, Guinea Pigs)'},
-        ]
-        
-        for sp in species:
-            SpeciesTypes.objects.get_or_create(name=sp['name'])
-        
+DISASTERS = [
+    {'category': 'FLOOD', 'name': 'Flood',
+     'description': 'Overflow of water onto land that is normally dry, from rivers, heavy rain, or coastal surges.'},
+    {'category': 'WILDFIRE', 'name': 'Wildfire',
+     'description': 'Uncontrolled fire burning through forest, grassland, or brush.'},
+    {'category': 'HEATWAVE', 'name': 'Heatwave',
+     'description': 'Prolonged period of abnormally high temperatures.'},
+    {'category': 'POWER_OUTAGE', 'name': 'Power Outage',
+     'description': 'Loss of electrical service that disrupts refrigeration, lighting, and equipment.'},
+    {'category': 'AIR_POLLUTION', 'name': 'Air Pollution',
+     'description': 'Poor air quality from smoke, smog, or industrial emissions.'},
+    {'category': 'EROSION', 'name': 'Erosion',
+     'description': 'Loss of soil or land from water, wind, or slope instability.'},
+    {'category': 'HURRICANE', 'name': 'Hurricane',
+     'description': 'Tropical cyclone with sustained high winds and heavy rain.'},
+    {'category': 'TORNADO', 'name': 'Tornado',
+     'description': 'Violently rotating column of air extending from a storm to the ground.'},
+    {'category': 'COLD_WAVE', 'name': 'Cold Wave',
+     'description': 'Prolonged period of abnormally low temperatures.'},
+    {'category': 'BLIZZARD', 'name': 'Blizzard',
+     'description': 'Severe snowstorm with strong winds and low visibility.'},
+    {'category': 'EARTHQUAKE', 'name': 'Earthquake',
+     'description': 'Sudden ground shaking caused by movement along fault lines.'},
+    {'category': 'AVALANCHE', 'name': 'Avalanche',
+     'description': 'Rapid flow of snow down a slope, often triggered by weather or terrain.'},
+]
+
+FACILITIES = [
+    'Standalone Clinic',
+    'Multi-story Building',
+    'Basement Facility',
+    'Mobile Clinic',
+    'Attached to Residence',
+]
+
+SERVICES = [
+    'Emergency Services',
+    'Routine Care',
+    'Surgery',
+    'Boarding',
+    'Grooming',
+    'Dental Care',
+]
+
+SPECIES = [
+    'Small Mammals (Cats, Dogs, Rabbits)',
+    'Large Animals (Horses, Cattle)',
+    'Exotic Birds',
+    'Reptiles',
+    'Pocket Pets (Hamsters, Guinea Pigs)',
+]
+
+
+class Command(BaseCommand):
+    help = 'Seed initial disaster planning data (safe to run repeatedly)'
+
+    @transaction.atomic
+    def handle(self, *args, **options):
+        # Disaster types: keyed by category, so re-running never creates duplicates
+        for d in DISASTERS:
+            DisasterType.objects.update_or_create(
+                category=d['category'],
+                defaults={'name': d['name'], 'description': d['description']},
+            )
+
+        # Other types have no fixed codes yet, so key them by name
+        for name in FACILITIES:
+            ClinicTypes.objects.get_or_create(name=name)
+
+        for name in SERVICES:
+            ServiceTypes.objects.get_or_create(name=name)
+
+        for name in SPECIES:
+            SpeciesTypes.objects.get_or_create(name=name)
+
         self.stdout.write(self.style.SUCCESS('Successfully seeded disaster data'))

@@ -11,25 +11,6 @@ from .serializers import ( DisasterPlanSerializer, DisasterTypeSerializer,
 from .data.disaster_protocols import DISASTER_PROTOCOLS
 
 
-DISASTER_NAME_TO_PROTOCOL = {
-    'Flash Flood': 'FLOOD',
-    'Flood': 'FLOOD',
-    'Wildfire': 'WILDFIRE',
-    'Forest Fire': 'WILDFIRE',
-    'Heat Wave': 'HEATWAVE',
-    'Extreme Heat': 'HEATWAVE',
-    'Power Outage': 'POWER_OUTAGE',
-    'Air Pollution': 'AIR_POLLUTION',
-    'Erosion': 'EROSION',
-    'Hurricane': 'HURRICANE',
-    'Tornado': 'TORNADO',
-    'Cold Wave': 'COLD_WAVE',
-    'Extreme Cold': 'COLD_WAVE',
-    'Blizzard': 'BLIZZARD',
-    'Earthquake': 'EARTHQUAKE',
-    'Avalanche': 'AVALANCHE',
-}
-
 # Create your views here.
 class DisasterPlanViewSet(viewsets.ModelViewSet):
     queryset = DisasterPlan.objects.all().prefetch_related(
@@ -139,36 +120,25 @@ class DisasterPlanViewSet(viewsets.ModelViewSet):
             )
         
         try:
-            disaster_type_obj = DisasterType.objects.get(id=int(disaster_type_id))
-            
-            # Map the disaster type name to protocol key
-            protocol_key = DISASTER_NAME_TO_PROTOCOL.get(disaster_type_obj.name)
-            
-            if not protocol_key:
-                return Response(
-                    {'error': f'No protocol mapping found for "{disaster_type_obj.name}". Please contact administrator.'}, 
-                    status=status.HTTP_404_NOT_FOUND
-                )
-            
-            protocol = DISASTER_PROTOCOLS.get(protocol_key)
-            
-            if not protocol:
-                return Response(
-                    {'error': f'No protocol found for {protocol_key}'}, 
-                    status=status.HTTP_404_NOT_FOUND
-                )
-            
-            return Response(protocol, status=status.HTTP_200_OK)
+            disaster_type = DisasterType.objects.get(id=int(disaster_type_id))
             
         except DisasterType.DoesNotExist:
             return Response(
                 {'error': f'Disaster Type with id {disaster_type_id} not found'}, 
                 status=status.HTTP_404_NOT_FOUND
             )
-        except Exception as e:
-            print(f"Error in generate: {str(e)}")
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except (ValueError, DisasterType.DoesNotExist):
+            return Response({'error': f'Disaster type {disaster_type_id} not found'},
+                            status=status.HTTP_404_NOT_FOUND)
 
+        protocol = DISASTER_PROTOCOLS.get(disaster_type.category)
+        if protocol is None:
+            return Response(
+                {'error': f'No protocol for category "{disaster_type.category}"'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        return Response(protocol, status=status.HTTP_200_OK)
 
         # data = request.data
         #disaster_type_id = data.get('disaster_type')

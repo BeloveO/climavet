@@ -44,25 +44,31 @@ class SpeciesTypes(models.Model):
     class Meta:
         verbose_name = "Species Category"
 
+DISASTER_CATEGORIES = [
+    ("FLOOD", "Flood"),
+    ("WILDFIRE", "Wildfire"),
+    ("HEATWAVE", "Heatwave"),
+    ("POWER_OUTAGE", "Power Outage"),
+    ("AIR_POLLUTION", "Air Pollution"),
+    ("EROSION", "Erosion"),
+    ("HURRICANE", "Hurricane"),
+    ("TORNADO", "Tornado"),
+    ("COLD_WAVE", "Cold Wave"),
+    ("BLIZZARD", "Blizzard"),
+    ("EARTHQUAKE", "Earthquake"),
+    ("AVALANCHE", "Avalanche"),
+]
+
 class DisasterType(models.Model):
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=100,
-                                choices=[
-                                    ("FLOOD", "Flood"),
-                                    ("WILDFIRE", "Wildfire"),
-                                    ("HEATWAVE", "Heatwave"),
-                                    ("POWER_OUTAGE", "Power Outage"),
-                                    ("AIR_POLLUTION", "Air Pollution"),
-                                    ("EROSION", "Erosion"),
-                                    ("HURRICANE", "Hurricane"),
-                                    ("TORNADO", "Tornado"),
-                                    ("COLD_WAVE", "Cold Wave"),
-                                    ("BLIZZARD", "Blizzard"),
-                                    ("EARTHQUAKE", "Earthquake"),
-                                    ("AVALANCHE", "Avalanche"),
-                                ])
+                                unique=True,
+                                choices=DISASTER_CATEGORIES)
     description = models.TextField(blank=True, null=True)
-    common_regions = models.JSONField(default=list)  # List of regions commonly affected by this disaster type
+    common_regions = models.JSONField(default=list)  # List of regions commonly affected by this disasters
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
