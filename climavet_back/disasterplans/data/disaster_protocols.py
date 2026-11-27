@@ -1,3 +1,70 @@
+def _protocol(
+        pk, key, name, description, common_regions, preparation_steps, response_steps, 
+        recovery_steps, emergency_contacts, supplies_needed, training_requirements
+):
+    return {
+        "id": pk,
+        "name": name,
+        "description": description,
+        "disaster_type": key,
+        "created_at": "",
+        "common_regions": common_regions,
+        "preparation_steps": preparation_steps,
+        "response_steps": response_steps,
+        "recovery_steps": recovery_steps,
+        "emergency_contacts": emergency_contacts,
+        "supplies_needed": supplies_needed,
+        "training_requirements": training_requirements
+    }
+
+
+#-------------------------------------------------------------------------
+# SHARED CONTENT FOR EVERY PROTOCOL
+#-------------------------------------------------------------------------
+
+PROVINCIAL_EMERGENCY_MANAGEMENT_OFFICES = [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+]
+
+
+COMMON_CONTACTS = [
+    {"name": "Emergency services (police, fire, ambulance)", "phone": "911", "type": "Emergency"},
+    {"name": "Environment and Climate Change Canada weather alerts", "phone": "See weather.gc.ca", "type": "Weather alerts"},
+    {"name": "Provincial emergency management office", "phone": "[Insert number]", "type": "Government"},
+    {"name": "Provincial veterinary medical association", "phone": "[Insert number]", "type": "Professional"},
+    {"name": "Local municipal emergency office", "phone": "[Insert number]", "type": "Municipal"},
+]
+
+COMMON_SUPPLIES = [
+    {"item": "Potable water", "quantity": 3, "unit": "day supply for all animals and staff"},
+    {"item": "Non-perishable food for animals", "quantity": 3, "unit": "day supply"},
+    {"item": "Battery or hand-crank flashlights with spare batteries", "quantity": 4, "unit": "units"},
+    {"item": "Battery or hand-crank radio", "quantity": 1, "unit": "unit"},
+    {"item": "Veterinary emergency first aid kit", "quantity": 2, "unit": "kits"},
+    {"item": "Patient records, vaccination history, and microchip numbers (paper and digital copies)", "quantity": 1, "unit": "set"},
+    {"item": "Carriers, leashes, and muzzles", "quantity": 1, "unit": "per animal"},
+    {"item": "Waste bags and veterinary disinfectant", "quantity": 1, "unit": "supply"},
+]
+
+COMMON_TRAINING = [
+    "Emergency roles and chain of command (incident lead, animal handling, records, communications)",
+    "Small and large animal first aid and CPR for all clinical staff",
+    "Safe animal handling and restraint in stressful conditions",
+    "Annual tabletop drill of this plan, with documented results",
+]
+
 DISASTER_PROTOCOLS = {
     "FLOOD": {
         "id": 1,
