@@ -23,28 +23,55 @@ def _protocol(
 #-------------------------------------------------------------------------
 
 PROVINCIAL_EMERGENCY_MANAGEMENT_OFFICES = [
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
+    {"province": "AB", "name": "Alberta Emergency Management Agency", "phone": "[Insert number]", "type": "Government"},
+    {"province": "BC", "name": "Emergency Management BC", "phone": "[Insert number]", "type": "Government"},
+    {"province": "MB", "name": "Manitoba Emergency Measures Organization", "phone": "[Insert number]", "type": "Government"},
+    {"province": "NB", "name": "New Brunswick Emergency Management Organization", "phone": "[Insert number]", "type": "Government"},
+    {"province": "NL", "name": "Newfoundland and Labrador Office of Emergency Management", "phone": "[Insert number]", "type": "Government"},
+    {"province": "NS", "name": "Nova Scotia Emergency Management Office", "phone": "[Insert number]", "type": "Government"},
+    {"province": "ON", "name": "Emergency Management Ontario", "phone": "[Insert number]", "type": "Government"},
+    {"province": "PE", "name": "PEI Emergency Management Organization", "phone": "[Insert number]", "type": "Government"},
+    {"province": "QC", "name": "Sécurité publique Québec (civil protection)", "phone": "[Insert number]", "type": "Government"},
+    {"province": "SK", "name": "Saskatchewan Public Safety Agency", "phone": "[Insert number]", "type": "Government"},
+    {"province": "NT", "name": "NWT Emergency Management Organization", "phone": "[Insert number]", "type": "Government"},
+    {"province": "NU", "name": "Nunavut Emergency Management", "phone": "[Insert number]", "type": "Government"},
+    {"province": "YT", "name": "Yukon Emergency Management", "phone": "[Insert number]", "type": "Government"},
 ]
+
+PROVINCIAL_VETERINARY_MEDICAL_ASSOCIATION = [
+    {"province": "AB", "name": "Alberta veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "BC", "name": "British Columbia veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "MB", "name": "Manitoba veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "NB", "name": "New Brunswick veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "NL", "name": "Newfoundland and Labrador veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "NS", "name": "Nova Scotia veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "ON", "name": "Ontario veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "PE", "name": "PEI veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "QC", "name": "Ordre des médecins vétérinaires du Québec", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "SK", "name": "Saskatchewan veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "NT", "name": "NWT veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "NU", "name": "Nunavut veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+    {"province": "YT", "name": "Yukon veterinary regulator or association [verify name]", "phone": "[Insert number]", "type": "Professional"},
+]
+
+CLINIC_PROVINCE = "AB"
+
+def _contacts_for_province(rows, province_code):
+    """Return the contact entries for one province"""
+    return [
+        {"name": r["name"], "phone": r["phone"], "type": r["type"]}
+        for r in rows
+        if r["province"] == province_code
+    ]
 
 
 COMMON_CONTACTS = [
     {"name": "Emergency services (police, fire, ambulance)", "phone": "911", "type": "Emergency"},
     {"name": "Environment and Climate Change Canada weather alerts", "phone": "See weather.gc.ca", "type": "Weather alerts"},
-    {"name": "Provincial emergency management office", "phone": "[Insert number]", "type": "Government"},
-    {"name": "Provincial veterinary medical association", "phone": "[Insert number]", "type": "Professional"},
+    {"name": "Canadian Veterinary Medical Association", "phone": "[Insert number]", "type": "Professional"},
     {"name": "Local municipal emergency office", "phone": "[Insert number]", "type": "Municipal"},
+    *_contacts_for_province(PROVINCIAL_EMERGENCY_MANAGEMENT_OFFICES, CLINIC_PROVINCE),
+    *_contacts_for_province(PROVINCIAL_VETERINARY_MEDICAL_ASSOCIATION, CLINIC_PROVINCE),
 ]
 
 COMMON_SUPPLIES = [
